@@ -5,7 +5,7 @@
     General
   </p>
   <ul class="menu-list">
-    <li><a class="aWhite" >Dashboard</a></li>
+    <li><a class="aWhite" @click="goTo('/dashboard')" >Dashboard</a></li>
   </ul>
   <p class="menu-label pWhite is-size-6">
     Administration
