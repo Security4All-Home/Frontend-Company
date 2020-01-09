@@ -1,17 +1,7 @@
+$menu-item-hover-background-color: rgba(13, 52, 107, 0.349) !important;
+$menu-item-active-color: #FFBF2F !important;
+$menu-item-active-background-color: rgba(13, 52, 107, 0.349) !important;
 
-// Pre change colors
-//$navbar-background-color: rgb(10, 31, 60) !important;
-$navbar-item-hover-color: rgb(10, 31, 60) !important;
-$navbar-item-hover-background-color: rgba(13, 52, 107, 0) !important;
-$navbar-dropdown-background-color:#ffffff10 !important;
-$navbar-dropdown-item-hover-background-color:rgba(13, 52, 107, 0.349) !important;
-$navbar-dropdown-item-hover-color: #ffffff !important;
-//$navbar-divider-background-color:#FFBF2F !important;
-$navbar-dropdown-border-top: transparent !important;
-$navbar-dropdown-border: #ffffff !important;
-$navbar-dropdown-arrow: #ffffff !important;
-$navbar-item-color: #ffffff !important;
-$navbar-dropdown-offset: -200px !important;
 
 // Import Bulma's core
 @import "~bulma/sass/utilities/_all";
@@ -82,5 +72,4 @@ $family-serif: 'Montserrat', sans-serif;
 .isWhiteBG {
   background-color: $ourWhite !important;
 }
-
 
