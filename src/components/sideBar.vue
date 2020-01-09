@@ -5,32 +5,32 @@
     General
   </p>
   <ul class="menu-list">
-    <li><a class="aWhite is-active" @click="goTo('/dashboard')" >Dashboard</a></li>
+    <li><a class="aWhite " v-bind:class="(page==0)? 'is-active':''" @click="goTo('/dashboard',0)" >Dashboard</a></li>
   </ul>
   <p class="menu-label pWhite is-size-6">
     Administration
   </p>
   <ul class="menu-list">
-    <li><a class="aWhite" @click="goTo('/admin/requests')" >Validate installation requests</a></li>
-    <li><a class="aWhite" @click="goTo('/admin/subscription')" >Subscription packages</a></li>
-    <li><a class="aWhite" @click="goTo('/admin/gamification')" >Gamification</a></li>
+    <li><a class="aWhite" @click="goTo('/admin/requests',1)" v-bind:class="(page==1)? 'is-active':''">Validate installation requests</a></li>
+    <li><a class="aWhite" @click="goTo('/admin/subscription',2)" v-bind:class="(page==2)? 'is-active':''">Subscription packages</a></li>
+    <li><a class="aWhite" @click="goTo('/admin/gamification',3)" v-bind:class="(page==3)? 'is-active':''">Gamification</a></li>
   </ul>
   <p class="menu-label pWhite is-size-6">
     Sensors
   </p>
   <ul class="menu-list">
-    <li><a class="aWhite" @click="goTo('/sensor/new')" >New Sensor</a></li>
-    <li><a class="aWhite" @click="goTo('/sensor/manager')" >Manage Sensors</a></li>
-    <li><a class="aWhite" @click="goTo('/sensor/orders')" >Orders</a></li>
+    <li><a class="aWhite" @click="goTo('/sensor/new',4)" v-bind:class="(page==4)? 'is-active':''">New Sensor</a></li>
+    <li><a class="aWhite" @click="goTo('/sensor/manager',5)" v-bind:class="(page==5)? 'is-active':''" >Manage Sensors</a></li>
+    <li><a class="aWhite" @click="goTo('/sensor/orders',6)" v-bind:class="(page==6)? 'is-active':''">Orders</a></li>
   </ul>
   <p class="menu-label pWhite is-size-6">
     Users
   </p>
   <ul class="menu-list">
-    <li><a class="aWhite" @click="goTo('/user/manager')" >Manage Users</a></li>
+    <li><a class="aWhite" @click="goTo('/user/manager',7)" v-bind:class="(page==7)? 'is-active':''">Manage Users</a></li>
   </ul>
   <br>
-  <p class="menu-label pWhite is-size-6 primaryHover exit" @click="goTo('/')">
+  <p class="menu-label pWhite is-size-6 primaryHover exit" @click="goTo('/', 0)">
     <i class="fas fa-sign-out-alt"></i> Sign out
   </p>
 </aside>
@@ -62,13 +62,18 @@ export default {
   name: "Sidebar",
   data() {
     return {
+      page: 0
     };
   },
   created() {
+    if(localStorage.getItem("page")){
+      this.page = localStorage.getItem("page");
+    }
     
   },
   methods: {
-    goTo(path) {
+    goTo(path,page) {
+      localStorage.setItem("page", page);
       this.$router.push(path);
     }
   }
