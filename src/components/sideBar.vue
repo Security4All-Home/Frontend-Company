@@ -30,7 +30,7 @@
     <li><a class="aWhite" >Manage Users</a></li>
   </ul>
   <br>
-  <p class="menu-label pWhite is-size-6">
+  <p class="menu-label pWhite is-size-6" @click="goTo('/')">
     <i class="fas fa-sign-out-alt"></i> Sign out
   </p>
 </aside>
@@ -55,3 +55,22 @@
 }
 
 </style>
+
+<script>
+
+export default {
+  name: "Sidebar",
+  data() {
+    return {
+    };
+  },
+  created() {
+    
+  },
+  methods: {
+    goTo(path) {
+      this.$router.push(path);
+    }
+  }
+}
+</script>
