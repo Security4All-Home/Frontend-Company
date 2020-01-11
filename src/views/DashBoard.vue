@@ -5,25 +5,25 @@
     <div class="tile is-ancestor has-text-centered">
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <p class="title">439k</p>
+          <CountUp v-bind:endValue="values[0]"></CountUp>
           <p class="subtitle">Users</p>
         </article>
       </div>
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <p class="title">59k</p>
+          <CountUp v-bind:endValue="values[1]"></CountUp>
           <p class="subtitle">Sensors Sold</p>
         </article>
       </div>
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <p class="title">3.4k</p>
+          <CountUp v-bind:endValue="values[2]"></CountUp>
           <p class="subtitle">Installation Requests</p>
         </article>
       </div>
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <p class="title">19</p>
+          <CountUp v-bind:endValue="values[3]"></CountUp>
           <p class="subtitle">Orders</p>
         </article>
       </div>
@@ -33,25 +33,25 @@
     <div class="tile is-ancestor has-text-centered">
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <p class="title">439k</p>
+          <CountUp v-bind:endValue="values[4]"></CountUp>
           <p class="subtitle">Number of houses</p>
         </article>
       </div>
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <p class="title">59k</p>
+          <CountUp v-bind:endValue="values[5]"></CountUp>
           <p class="subtitle">Average sensor per house</p>
         </article>
       </div>
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <p class="title">3.4k</p>
+          <CountUp v-bind:endValue="values[6]"></CountUp>
           <p class="subtitle">Open Orders</p>
         </article>
       </div>
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <p class="title">19</p>
+          <CountUp v-bind:endValue="values[7]"></CountUp>
           <p class="subtitle">Exceptions</p>
         </article>
       </div>
@@ -97,20 +97,24 @@
           </footer>
         </div>
       </div>
-    </div>
+    </div>   
+
   </section>
 </body>
 </template>
 
 <script>
 import SideBar from "../components/sideBar";
+import CountUp from "../components/countUp";
 
 export default {
   components: {
-    SideBar
+    SideBar,
+    CountUp
   },
   data() {
     return {
+      values: [200000,257,42156,122415,231,324,5003,1223],
       events: [
         {
           name: "O utilizador xpto45 carregou no botão de emergencia.",
@@ -173,6 +177,7 @@ export default {
     };
   },
   created() {
+
     
   },
   methods: {
