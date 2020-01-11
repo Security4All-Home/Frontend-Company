@@ -5,7 +5,7 @@
     General
   </p>
   <ul class="menu-list">
-    <li><a class="aWhite " v-bind:class="(page==0)? 'is-active':''" @click="goTo('/dashboard',0)" >Dashboard</a></li>
+    <li><a class="aWhite has-tooltip-right" v-bind:class="(page==0)? 'is-active':''" @click="goTo('/dashboard',0)" data-tooltip="Tooltip Text">Dashboard</a></li>
   </ul>
   <p class="menu-label pWhite is-size-6">
     Administration

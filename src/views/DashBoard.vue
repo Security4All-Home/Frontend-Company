@@ -1,5 +1,5 @@
 <template>
-<body class="isWhiteBG is-fullheight">
+<body>
   <SideBar class="is-hidden-mobile"></SideBar>
   <section class="info-tiles column is-10 is-offset-2">
     <div class="tile is-ancestor has-text-centered">

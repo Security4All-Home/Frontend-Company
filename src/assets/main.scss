@@ -10,6 +10,8 @@ $menu-item-active-background-color: rgba(13, 52, 107, 0.349) !important;
 @import "~bulma/bulma";
 @import "~buefy/src/scss/buefy";
 
+@import "~bulma-extensions/bulma-tooltip/src/sass/index";
+//@import "../../node_modules/bulma-extensions/bulma-tooltip/src/sass/index.sass";
 
 
 // Colors
@@ -73,3 +75,6 @@ $family-serif: 'Montserrat', sans-serif;
   background-color: $ourWhite !important;
 }
 
+html {
+  background-color: $ourWhite !important;
+}
