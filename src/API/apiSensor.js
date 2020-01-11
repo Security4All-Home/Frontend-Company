@@ -1,17 +1,17 @@
 import {get, post, put, remove} from  '../Utils/https'
 
 export function getAllSensors() {
-    return get("/sensor")
+    return get("/sensors")
 }
 
 export function editSensor(body) {
-    return put("/sensor", body)
+    return put("/sensors", body)
 }
 
 export function addSensor(body) {
-    return post("/sensor", body)
+    return post("/sensors", body)
 }
 
 export function removeSensor(body) {
-    return remove("/sensor", body)
+    return remove("/sensors", body)
 }
