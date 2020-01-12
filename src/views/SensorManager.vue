@@ -12,7 +12,7 @@
             <b-autocomplete
               expanded
               v-model="inputSearch"
-              placeholder="Pesquise aqui por um sensor"
+              placeholder="Seearch for a sensor"
               icon="search"
               icon-pack="fas"
               type="search"
@@ -27,7 +27,7 @@
               icon-pack="fas"
               expanded
             >
-              <option value="-1">Todos</option>
+              <option value="-1">All</option>
               <option v-for="(c,i) in categorys" :value="c.idCategory" :key="i">{{c.name}}</option>
             </b-select>
           </div>
@@ -39,7 +39,7 @@
               icon-pack="fas"
               expanded
             >
-              <option value="-1">Todos</option>
+              <option value="-1">All</option>
               <!-- <option v-for="(area,i) in areaArray" :value="area" :key="i">{{area}}</option> -->
             </b-select>
           </div>
@@ -91,7 +91,7 @@
     <!-- Cards / Body -->
     <div class="columns is-multiline" v-if="view==2">
       <div class="column is-6-desktop" v-for="(sensor,i) in filteredSensors" :key="i">
-        <div class="card is-rounded sameheight">
+        <div class="card cardTheHover">
           <div class="card-content">
             <div class="media">
               <div class="media-left is-2" style="margin-top: 12px;margin-left: 12px ">
@@ -151,7 +151,7 @@
             <th>{{sensor.categoryName}}</th>
             <th>{{sensor.stock}}</th>
             <th>{{sensor.price}}</th>
-            <th>
+            <th width="15%">
               <button class="button is-info" @click="openEditSensor(sensor.idSensor)">
                 <i class="fas fa-edit"></i>
               </button>
@@ -234,11 +234,11 @@
           </div>
           <div class="columns">
             <div class="column is-12">
-              <b-field label="Escreva aqui a descrição da solução">
+              <b-field label="Edit the description">
                 <b-input
                   type="text"
-                  maxlength="150"
-                  placeholder="Descrição"
+                  maxlength="300"
+                  placeholder="Description"
                   icon-pack="fas"
                   icon="font"
                   required

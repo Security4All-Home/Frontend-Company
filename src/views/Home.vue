@@ -76,6 +76,7 @@ export default {
   created() {},
   methods: {
     goTo(path) {
+      localStorage.setItem("page", 0);
       this.$router.push(path);
     }
   }

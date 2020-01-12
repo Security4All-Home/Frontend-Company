@@ -11,7 +11,7 @@
     Administration
   </p>
   <ul class="menu-list">
-    <li><a class="aWhite" @click="goTo('/admin/requests',1)" v-bind:class="(page==1)? 'is-active':''">Validate installation requests</a></li>
+    <li><a class="aWhite" @click="goTo('/admin/requests',1)" v-bind:class="(page==1)? 'is-active':''">Validate installation req</a></li>
     <li><a class="aWhite" @click="goTo('/admin/subscription',2)" v-bind:class="(page==2)? 'is-active':''">Subscription packages</a></li>
     <li><a class="aWhite" @click="goTo('/admin/gamification',3)" v-bind:class="(page==3)? 'is-active':''">Gamification</a></li>
   </ul>
@@ -27,7 +27,8 @@
     Users
   </p>
   <ul class="menu-list">
-    <li><a class="aWhite" @click="goTo('/user/manager',7)" v-bind:class="(page==7)? 'is-active':''">Manage Users</a></li>
+    <li><a class="aWhite" @click="goTo('/user/validate',7)" v-bind:class="(page==7)? 'is-active':''">Validate Users</a></li>
+    <li><a class="aWhite" @click="goTo('/user/manager',8)" v-bind:class="(page==8)? 'is-active':''">Manage Users</a></li>
   </ul>
   <br>
   <p class="menu-label pWhite is-size-6 primaryHover exit" @click="goTo('/', 0)">

@@ -10,6 +10,8 @@ import userManager from "../views/UserManager.vue";
 import sensorManager from "../views/SensorManager.vue";
 import sensorNew from "../views/SensorNew.vue";
 import sensorOrders from "../views/SensorOrders.vue";
+import userValidate from "../views/UserValidate.vue";
+
 
 Vue.use(VueRouter);
 
@@ -57,6 +59,11 @@ const routes = [{
     path: '/user/manager',
     name: 'userManager',
     component: userManager
+  },
+  {
+    path: '/user/validate',
+    name: 'userValidate',
+    component: userValidate
   }
 ];
 
