@@ -7,12 +7,15 @@
     <div class="level">
       <div class="level-left">
         <div class="columns">
-          <div class="column is-9">
+          <div class="column is-4">
             <!-- Search bar -->
             <b-autocomplete
+              expanded
               v-model="inputSearch"
               placeholder="Pesquise aqui por um sensor"
-              icon="magnify"
+              icon="search"
+              icon-pack="fas"
+              type="search"
               @select="option => this.selected = option"
             ></b-autocomplete>
           </div>
@@ -24,8 +27,8 @@
               icon-pack="fas"
               expanded
             >
-              <option value>Todos</option>
-              <option v-for="(cae,i) in caeArray" :value="cae" :key="i">{{cae}}</option>
+              <option value="-1">Todos</option>
+              <option v-for="(c,i) in categorys" :value="c.idCategory" :key="i">{{c.name}}</option>
             </b-select>
           </div>
           <div class="column is-3">
@@ -36,9 +39,30 @@
               icon-pack="fas"
               expanded
             >
-              <option value>Todos</option>
+              <option value="-1">Todos</option>
               <!-- <option v-for="(area,i) in areaArray" :value="area" :key="i">{{area}}</option> -->
             </b-select>
+          </div>
+          <div class="column is-2">
+            <nav class="level">
+              <div class="level-left">
+                <button
+                  class="button isSecondaryBGColor has-text-white"
+                  @click="filteredSensorsFunc"
+                  expanded
+                >Search</button>
+              </div>
+              <div class="level-right">
+                <div class="level-item">
+                  <button
+                    class="button isOurGrey has-text-white"
+                    @click="() =>{ OrderSelected=-1; CategorySelected=-1; inputSearch= ''; filteredSensorsFunc()}"
+                  >
+                    <i class="fas fa-eraser"></i>
+                  </button>
+                </div>
+              </div>
+            </nav>
           </div>
         </div>
       </div>
@@ -66,7 +90,6 @@
 
     <!-- Cards / Body -->
     <div class="columns is-multiline" v-if="view==2">
-      <p class="has-text-centered" v-if="filteredSensorsFunc == 0">Não foram encontrados sensores</p> 
       <div class="column is-6-desktop" v-for="(sensor,i) in filteredSensors" :key="i">
         <div class="card is-rounded sameheight">
           <div class="card-content">
@@ -116,7 +139,7 @@
         <tbody>
           <!-- v-if="filteredCompaniesFunc != 0" -->
 
-          <tr v-for="(sensor,i) in sensors" :key="i">
+          <tr v-for="(sensor,i) in filteredSensors" :key="i">
             <th>
               <figure class="image is-32x32">
                 <img :src="sensor.image" alt="Placeholder image" />
@@ -143,69 +166,68 @@
     <!-- Table -->
   </section>
 
-  <!-- MODAL EDIT -->
+  <!-- Modal -->
   <b-modal :active.sync="editModal" has-modal-card>
     <form action>
       <div class="modal-background"></div>
       <div class="modal-card" style="width: 1000px;">
         <header class="modal-card-head">
-          <!-- Title-->
           <div class="column is-7 is-6-mobile modal-title">
-            <p class="modal-card-title">Editar {{editName}}</p>
+            <p class="modal-card-title">Editing {{editName}}</p>
           </div>
         </header>
         <section class="modal-card-body">
           <div class="columns">
             <div class="column is-12-mobile is-half">
-              <b-field label="Escreva aqui a nova ioSolution">
+              <b-field label="Name of the sensor">
                 <b-input
-                  placeholder="ioSolution"
+                  placeholder="Sensor Name"
                   icon-pack="fas"
-                  icon="layer-group"
+                  icon="file-signature"
                   required
                   v-model="editName"
                 ></b-input>
               </b-field>
             </div>
             <div class="column is-12-mobile is-half">
-              <b-field label="Escreva aqui o link da imagem">
+              <b-field label="Link of the sensor">
                 <b-input
-                  placeholder="link imagem"
+                  placeholder="Paste the link of the image"
                   icon-pack="fas"
                   icon="image"
                   required
-                  v-model="editIcon"
+                  v-model="editImage"
                 ></b-input>
               </b-field>
             </div>
           </div>
           <div class="columns">
             <div class="column is-12-mobile is-half">
-              <b-field label="Escolha o tipo">
+              <b-field label="Choose the category">
                 <b-select
-                  placeholder="Tipo"
+                  placeholder="Category"
                   icon-pack="fas"
                   icon="sort"
-                  v-model="editType"
+                  v-model="editCategory"
                   expanded
                   required
                 >
                   <option
-                    v-for="(type,i) in solutionTypes"
-                    :value="type.name"
+                    v-for="(cat,i) in categorys"
+                    :value="cat.idCategory"
                     :key="i"
-                  >{{ type.name }}</option>
+                  >{{ cat.name }}</option>
                 </b-select>
               </b-field>
             </div>
             <div class="column is-12-mobile is-half">
-              <b-field label="Escreva aqui o link da solução">
+              <b-field label="Edit the price">
                 <b-input
-                  placeholder="link do website"
+                  placeholder="Price of the sensor"
                   icon-pack="fas"
-                  icon="link"
+                  icon="euro-sign"
                   required
-                  v-model="editLink"
+                  v-model="editPrice"
                 ></b-input>
               </b-field>
             </div>
@@ -225,25 +247,14 @@
               </b-field>
             </div>
           </div>
-          <div class="columns">
-            <div class="column is-12">
-              <b-field label="Escreva aqui a descrição da solução em Ingles">
-                <b-input
-                  type="text"
-                  maxlength="100"
-                  placeholder="Descrição EN"
-                  icon-pack="fas"
-                  icon="font"
-                  v-model="editDescriptionEN"
-                  required
-                ></b-input>
-              </b-field>
-            </div>
-          </div>
         </section>
         <footer class="modal-card-foot">
-          <button class="button" type="button" @click="editModal = false">Cancelar</button>
-          <button class="button is-success" type="button" @click="editSolution()">Guardar</button>
+          <button class="button" type="button" @click="editModal = false">Cancel</button>
+          <button
+            class="button is-success"
+            type="button"
+            @click="updateSensor(editPos)"
+          >Upload changes</button>
         </footer>
       </div>
     </form>
@@ -252,10 +263,11 @@
 </template>
 
 <script>
+import { ToastProgrammatic as toast } from "buefy";
 import SideBar from "../components/sideBar";
 
 //Axios
-import { getAllSensors } from "../API/apiSensor"; //editSensor
+import { getAllSensors, editSensor } from "../API/apiSensor";
 import { getAllCategorys } from "../API/apiCategory";
 
 export default {
@@ -267,18 +279,62 @@ export default {
       inputSearch: "",
       sensors: [],
       filteredSensors: [],
-      CategorySelected: "",
-      OrderSelected: "",
+      CategorySelected: -1,
+      OrderSelected: -1,
       categorys: [],
       view: 2,
       editModal: false,
+      editPos: null,
+      editId: null,
       editName: "",
       editPrice: "",
       editDescription: "",
-      editImage: ""
+      editImage: "",
+      editCategory: "",
+      editCategoryName: "",
     };
   },
-  computed: {
+  computed: {},
+  methods: {
+    updateSensor(pos) {
+      if (
+        this.editName &&
+        this.editPrice &&
+        this.editDescription &&
+        this.editPrice &&
+        this.editCategory
+      ) {
+        let temp = {
+          name: this.editName,
+          price: this.editPrice,
+          image: this.editImage,
+          description: this.editDescription,
+          idCategory: this.editCategory
+        };
+
+        editSensor(temp, this.editId)
+          .then(() => {
+            toast.open({
+              type: "is-success",
+              message: this.editName + " edited with success"
+            });
+
+            this.sensors[pos].name = this.editName;
+            this.sensors[pos].description = this.editDescription;
+            this.sensors[pos].price = this.editPrice;
+            this.sensors[pos].image = this.editImage;
+            this.sensors[pos].idCategory = this.editCategory;
+            this.sensors[pos].categoryName = this.editCategoryName;
+            this.editModal = false;
+          })
+          .catch(error => {
+            toast.open({
+              message: error,
+              type: "is-danger"
+            });
+          });
+      }
+    },
     filteredSensorsFunc() {
       if (this.sensors) {
         //Search for words
@@ -292,25 +348,22 @@ export default {
               .indexOf(this.inputSearch.toLowerCase()) >= 0
           );
         });
+        /* eslint-disable */
+        console.log(this.filteredSensors);
 
-        // //Filter
-        // this.filteredSolutions = this.filteredSolutions.filter(solution => {
-        //   if (
-        //     solution.type == this.solutionTypeSelected ||
-        //     this.solutionTypeSelected == ""
-        //   ) {
-        //     count++;
-        //     return true;
-        //   } else {
-        //     return false;
-        //   }
-        // });
-
-        return this.filteredSensors.lenght;
+        //Filter
+        this.filteredSensors = this.filteredSensors.filter(sensor => {
+          if (
+            sensor.idCategory == this.CategorySelected ||
+            this.CategorySelected == -1
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        });
       }
-    }
-  },
-  methods: {
+    },
     pageActive(n) {
       if (n == 1) {
         this.view = 1;
@@ -327,10 +380,14 @@ export default {
     openEditSensor(id) {
       let pos = this.getPosition(id);
 
+      this.editPos = pos;
+      this.editId = this.sensors[pos].idSensor;
       this.editName = this.sensors[pos].name;
       this.editPrice = this.sensors[pos].price;
       this.editDescription = this.sensors[pos].description;
       this.editImage = this.sensors[pos].image;
+      this.editCategory = this.sensors[pos].idCategory;
+      this.editCategoryName = this.sensors[pos].categoryName;
 
       this.editModal = true;
     },
@@ -338,7 +395,7 @@ export default {
       //Getting pos with the id
       let temp;
       this.sensors.forEach((sensor, i) => {
-        if (sensor.idSensor.indexOf(id) != -1) {
+        if (sensor.idSensor == id) {
           temp = i;
         }
       });
@@ -356,7 +413,7 @@ export default {
       /* eslint-disable */
       //console.log(response.data.data);
       this.sensors = response.data.data;
-
+      this.filteredSensors = response.data.data;
       this.sensors.forEach((sensor, i) => {
         this.categorys.forEach(category => {
           if (category.idCategory == sensor.idCategory) {

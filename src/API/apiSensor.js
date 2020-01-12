@@ -4,8 +4,8 @@ export function getAllSensors() {
     return get("/sensors")
 }
 
-export function editSensor(body) {
-    return put("/sensors", body)
+export function editSensor(body,id) {
+    return put("/sensors/"+ id, body)
 }
 
 export function addSensor(body) {
