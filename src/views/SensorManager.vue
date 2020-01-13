@@ -101,11 +101,11 @@
               </div>
               <div class="media-content" style="margin-top: 12px">
                 <p class="title is-4">{{sensor.name}}</p>
-                <p>Stock {{sensor.stock}}</p>
-                <p>Price {{sensor.price}}</p>
+                <p>Stock: {{sensor.stock}}</p>
+                <p>Price: {{sensor.price}}</p>
               </div>
               <div class="media-right" style="margin-top: 12px">
-                <button class="button is-info is-fullwidth is-light">
+                <button class="button is-info is-fullwidth is-light" @click="openEditSensor(sensor.idSensor)">
                   <i class="fas fa-edit"></i>
                 </button>
                 <br />

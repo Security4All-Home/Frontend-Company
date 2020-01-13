@@ -95,17 +95,17 @@
                 <p>Credit: {{user.credit}}</p>
               </div>
               <div class="media-right" style="margin-top: 12px">
-                <button class="button is-danger is-fullwidth is-light" v-if="user.disabled">
+                <button class="button is-danger is-fullwidth is-light" v-if="user.disabled==0" @click="blockButton(1, user.username, user.idUser, i)">
                   <i class="fas fa-ban"></i>
                 </button>
-                <button class="button is-link is-fullwidth is-light" v-if="!user.disabled">
+                <button class="button is-link is-fullwidth is-light" v-if="user.disabled==1" @click="blockButton(0, user.username, user.idUser, i)">
                   <i class="fas fa-unlock"></i>
                 </button>
                 <br />
-                <button class="button is-warning is-fullwidth is-light" v-if="user.idType == 1">
+                <button class="button is-warning is-fullwidth is-light" v-if="user.idType == 1"  @click="adminButton(2, user.username, user.idUser, i)">
                   <i class="fas fa-user"></i>
                 </button>
-                <button class="button is-success is-fullwidth is-light" v-if="user.idType == 2">
+                <button class="button is-success is-fullwidth is-light" v-if="user.idType == 2"  @click="adminButton(1, user.username, user.idUser, i)">
                   <i class="fas fa-users-cog"></i>
                 </button>
               </div>
@@ -151,20 +151,22 @@
             <th>{{user.credit}}</th>
             <th>{{user.points}}</th>
             <th width="20%">
-              <button class="button is-info" style="width: 50px">
+              <button class="button is-info" style="width: 50px" @click="infoButton(i)">
                 <i class="fas fa-info-circle"></i>
               </button>
               <button
                 class="button is-danger is-light"
-                v-if="user.disabled"
+                v-if="user.disabled==0"
                 style="margin-left: 10px; width: 50px"
+                @click="blockButton(1, user.username, user.idUser, i)"
               >
-                <i class="fas fa-ban"></i>
+                <i class="fas fa-ban" ></i>
               </button>
               <button
-                class="button is-link is-light"
-                v-if="!user.disabled"
+                class="button is-info is-light"
+                v-if="user.disabled==1"
                 style="margin-left: 10px; width: 50px"
+                @click="blockButton(0, user.username, user.idUser, i)"
               >
                 <i class="fas fa-unlock"></i>
               </button>
@@ -191,6 +193,55 @@
     </div>
     <!-- Table -->
   </section>
+
+  <!-- Modal -->
+  <b-modal :active.sync="infoModal" has-modal-card>
+    <form action>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <div class="column modal-title">
+            <p class="modal-card-title">{{users[infoPos].name}} info</p>
+          </div>
+        </header>
+        <section class="modal-card-body">
+          <div class="columns">
+            <div class="column is-4">
+              <img :src="users[infoPos].image" />
+            </div>
+            <div class="column is-8">
+              <p>
+                Name:
+                <b>{{users[infoPos].name}}</b>
+              </p>
+              <p>
+                Username:
+                <b>{{users[infoPos].username}}</b>
+              </p>
+              <p>
+                Adress:
+                <b>{{users[infoPos]. taxAdress}}</b>
+              </p>
+              <p>
+                Postal-code:
+                <b>{{users[infoPos].taxZipCode}}</b>
+              </p>
+              <p>
+                NIF:
+                <b>{{users[infoPos].nif}}</b>
+              </p>
+              <p>
+                Email:
+                <b>{{users[infoPos].email}}</b>
+              </p>
+            </div>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-pulled-right" type="button" @click="infoModal = false">Close</button>
+        </footer>
+      </div>
+    </form>
+  </b-modal>
 </body>
 </template>
 
@@ -198,7 +249,7 @@
 import SideBar from "../components/sideBar";
 
 //Axios
-import { getAllUsers, AdminUser } from "../API/apiUser";
+import { getAllUsers, AdminUser, blockUser } from "../API/apiUser";
 
 import { ToastProgrammatic as toast } from "buefy";
 
@@ -212,12 +263,71 @@ export default {
       inputSearch: "",
       view: 2,
       filterSelected: 1,
-      filteredUsers: []
+      filteredUsers: [],
+      infoModal: false,
+      infoPos: 0
     };
   },
   methods: {
-    infoButton() {},
-    blockButton() {},
+    infoButton(pos) {
+      this.infoPos = pos;
+      this.infoModal = true;
+    },
+    blockButton(action, name, id, pos) {
+      if (action == 1) {
+        this.$buefy.dialog.confirm({
+          title: "Block " + name,
+          message: "Are you sure you want to  <b>block</b> " + name + "?",
+          confirmText: "Block User",
+          type: "is-danger",
+          hasIcon: true,
+          onConfirm: () => {
+            blockUser(id, { disabled: action })
+              .then(() => {
+                toast.open({
+                  type: "is-warning",
+                  message: name + " was blocked"
+                });
+
+                this.users[pos].disabled = action;
+
+              })
+              .catch(error => {
+                toast.open({
+                  message: error,
+                  type: "is-danger"
+                });
+              });
+          }
+        });
+      } else if (action == 0) {
+        this.$buefy.dialog.confirm({
+          title: "Unblock " + name,
+          message: "Are you sure you want to <b>unblock</b> " + name + "?",
+          confirmText: "Unblock",
+          type: "is-warning",
+          hasIcon: true,
+          onConfirm: () => {
+            blockUser(id, { disabled: action })
+              .then(() => {
+                toast.open({
+                  type: "is-warning",
+                  message: name + " is now free"
+                });
+
+                this.users[pos].disabled = action;
+
+              })
+              .catch(error => {
+                toast.open({
+                  message: error,
+                  type: "is-danger"
+                });
+              });
+          }
+        });
+      }
+    },
     adminButton(action, name, id, pos) {
       if (action == 2) {
         this.$buefy.dialog.confirm({
@@ -238,6 +348,7 @@ export default {
                 });
 
                 this.users[pos].idType = action;
+
               })
               .catch(error => {
                 toast.open({
@@ -266,6 +377,7 @@ export default {
                 });
 
                 this.users[pos].idType = action;
+
               })
               .catch(error => {
                 toast.open({

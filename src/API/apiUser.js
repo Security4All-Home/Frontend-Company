@@ -23,3 +23,7 @@ export function validateUser(body) {
 export function AdminUser(id, body) {
     return put("/user/editUserType/" + id,body)
 }
+
+export function blockUser(id, body) {
+    return put("/user/deleteLogic/" + id,body)
+}

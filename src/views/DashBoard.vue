@@ -5,7 +5,8 @@
     <div class="tile is-ancestor has-text-centered">
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <CountUp v-bind:endValue="values[0]"></CountUp>
+          <p v-if="values[0]<2" class="title">0</p>
+          <CountUp v-if="values[0]>2"></CountUp>
           <p class="subtitle">Users</p>
         </article>
       </div>
@@ -46,7 +47,7 @@
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
           <CountUp v-bind:endValue="values[6]"></CountUp>
-          <p class="subtitle">Open Orders</p>
+          <p class="subtitle">Users to validate</p>
         </article>
       </div>
       <div class="tile is-parent">
@@ -82,9 +83,18 @@
                     <td>{{event.date}}</td>
 
                     <td>
-                      <a class="button is-small is-danger is-fullwidth" v-if="event.type=='danger'">Alert</a>
-                      <a class="button is-small is-warning is-fullwidth" v-if="event.type=='warning'">Stock Out</a>
-                      <a class="button is-small is-success is-fullwidth" v-if="event.type=='success'">Info</a>
+                      <a
+                        class="button is-small is-danger is-fullwidth"
+                        v-if="event.type=='danger'"
+                      >Alert</a>
+                      <a
+                        class="button is-small is-warning is-fullwidth"
+                        v-if="event.type=='warning'"
+                      >Stock Out</a>
+                      <a
+                        class="button is-small is-success is-fullwidth"
+                        v-if="event.type=='success'"
+                      >Info</a>
                     </td>
                   </tr>
                 </tbody>
@@ -92,13 +102,20 @@
             </div>
           </div>
           <footer class="card-footer">
-            <a class="card-footer-item" @click="eventsAll=!eventsAll" v-if="eventsAll==false">View All</a>
-            <a class="card-footer-item" @click="eventsAll=!eventsAll" v-if="eventsAll==true">View Less</a>
+            <a
+              class="card-footer-item"
+              @click="eventsAll=!eventsAll"
+              v-if="eventsAll==false"
+            >View All</a>
+            <a
+              class="card-footer-item"
+              @click="eventsAll=!eventsAll"
+              v-if="eventsAll==true"
+            >View Less</a>
           </footer>
         </div>
       </div>
-    </div>   
-
+    </div>
   </section>
 </body>
 </template>
@@ -107,6 +124,9 @@
 import SideBar from "../components/sideBar";
 import CountUp from "../components/countUp";
 
+//Axios
+import { getAllUsers } from "../API/apiUser";
+
 export default {
   components: {
     SideBar,
@@ -114,7 +134,8 @@ export default {
   },
   data() {
     return {
-      values: [200000,257,42156,122415,231,324,5003,1223],
+      users: [],
+      values: [0, 0, 0, 10],
       events: [
         {
           name: "O utilizador xpto45 carregou no botão de emergencia.",
@@ -177,25 +198,26 @@ export default {
     };
   },
   created() {
-
-    
+    getAllUsers().then(response => {
+        this.users = response.data.data;
+        this.values[0] = this.users.length;
+        
+      });
+      
   },
   methods: {
     filterEvents(events) {
-        let temp = []
-        if (!this.eventsAll){
-          while(temp.length < 8){
-            temp.push(events[temp.length])
-          }
+      let temp = [];
+      if (!this.eventsAll) {
+        while (temp.length < 8) {
+          temp.push(events[temp.length]);
         }
-        else if (this.eventsAll) {
-          temp = events
-        }
-        return temp
+      } else if (this.eventsAll) {
+        temp = events;
+      }
+      return temp;
     }
   }
-
-
 };
 </script>
 
@@ -214,5 +236,4 @@ export default {
   left: 0px;
   z-index: 10;
 }
-
 </style>
