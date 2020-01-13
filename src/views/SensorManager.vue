@@ -105,11 +105,14 @@
                 <p>Price {{sensor.price}}</p>
               </div>
               <div class="media-right" style="margin-top: 12px">
-                <button class="button is-info is-fullwidth">
+                <button class="button is-info is-fullwidth is-light">
                   <i class="fas fa-edit"></i>
                 </button>
                 <br />
-                <button class="button is-success is-fullwidth">
+                <button
+                  class="button is-success is-fullwidth is-light"
+                  @click="promptNumber(sensor.name, sensor.stock, sensor.idSensor, i)"
+                >
                   <i class="fas fa-arrow-circle-up"></i>
                 </button>
               </div>
@@ -151,12 +154,23 @@
             <th>{{sensor.categoryName}}</th>
             <th>{{sensor.stock}}</th>
             <th>{{sensor.price}}</th>
-            <th width="15%">
-              <button class="button is-info" @click="openEditSensor(sensor.idSensor)">
+            <th width="20%">
+              <button class="button is-info is-light" @click="openEditSensor(sensor.idSensor)">
                 <i class="fas fa-edit"></i>
               </button>
-              <button class="button is-success" style="margin-left: 10px">
+              <button
+                class="button is-success is-light"
+                style="margin-left: 10px"
+                @click="promptNumber(sensor.name, sensor.stock, sensor.idSensor, i)"
+              >
                 <i class="fas fa-arrow-circle-up"></i>
+              </button>
+              <button 
+                class="button is-danger is-light"
+                style="margin-left: 10px"
+                @click="deleteSensorById(sensor.name, sensor.idSensor, i)"
+              >
+                <i class="fas fa-trash-alt"></i>
               </button>
             </th>
           </tr>
@@ -267,7 +281,7 @@ import { ToastProgrammatic as toast } from "buefy";
 import SideBar from "../components/sideBar";
 
 //Axios
-import { getAllSensors, editSensor } from "../API/apiSensor";
+import { getAllSensors, editSensor, removeSensor } from "../API/apiSensor";
 import { getAllCategorys } from "../API/apiCategory";
 
 export default {
@@ -291,11 +305,71 @@ export default {
       editDescription: "",
       editImage: "",
       editCategory: "",
-      editCategoryName: "",
+      editCategoryName: ""
     };
   },
   computed: {},
   methods: {
+    deleteSensorById(name, id,pos) {
+      this.$buefy.dialog.confirm({
+        title: "Deleting " + name,
+        message:
+          "Are you sure you want to <b>delete</b> the sensor " + name + " ?",
+        confirmText: "Delete Sensor",
+        type: "is-danger",
+        hasIcon: true,
+        onConfirm: () => {
+          removeSensor(id)
+            .then(() => {
+              toast.open({
+                type: "is-warning",
+                message: name + " deleted"
+              });
+
+              this.sensors.splice(pos,1)
+            })
+            .catch(error => {
+              toast.open({
+                message: error,
+                type: "is-danger"
+              });
+            });
+        }
+      });
+    },
+    promptNumber(name, stock, id, pos) {
+      /* eslint-disable */
+      console.log(stock);
+      this.$buefy.dialog.prompt({
+        message: `Increase the stock of ` + name,
+        inputAttrs: {
+          type: "number",
+          placeholder: "Type the stock of the sensor",
+          value: stock,
+          maxlength: 3,
+          min: stock
+        },
+        trapFocus: true,
+        onConfirm: value => {
+          let temp = { stock: value };
+          editSensor(temp, id)
+            .then(() => {
+              toast.open({
+                type: "is-success",
+                message: name + " stock updated"
+              });
+
+              this.sensors[pos].stock = value;
+            })
+            .catch(error => {
+              toast.open({
+                message: error,
+                type: "is-danger"
+              });
+            });
+        }
+      });
+    },
     updateSensor(pos) {
       if (
         this.editName &&
@@ -348,11 +422,9 @@ export default {
               .indexOf(this.inputSearch.toLowerCase()) >= 0
           );
         });
-        /* eslint-disable */
-        console.log(this.filteredSensors);
-
+ 
         //Filter
-        this.filteredSensors = this.filteredSensors.filter(sensor => {
+        this.filteredSensors = this.filteredSensors.sort(sensor => {
           if (
             sensor.idCategory == this.CategorySelected ||
             this.CategorySelected == -1

@@ -13,5 +13,5 @@ export function addSensor(body) {
 }
 
 export function removeSensor(body) {
-    return remove("/sensors", body)
+    return remove("/sensors/" + body)
 }

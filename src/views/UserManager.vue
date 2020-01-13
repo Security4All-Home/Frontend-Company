@@ -39,7 +39,7 @@
               <div class="level-left">
                 <button
                   class="button isSecondaryBGColor has-text-white"
-                  @click="filteredUsersFunc"
+                  @click="filteredUsersFunc()"
                   expanded
                 >Search</button>
               </div>
@@ -80,35 +80,32 @@
     </div>
     <!-- Cards -->
     <div class="columns is-multiline" v-if="view==2">
-      <div class="column is-6-desktop" v-for="(user,i) in users" :key="i">
+      <div class="column is-6-desktop" v-for="(user,i) in filteredUsers" :key="i">
         <div class="card cardTheHover">
           <div class="card-content">
             <div class="media">
               <div class="media-left is-2" style="margin-top: 12px;margin-left: 12px ">
                 <figure class="image is-64x64">
-                  <img
-                    src="https://pngimage.net/wp-content/uploads/2018/05/default-user-profile-image-png-6.png"
-                    alt="Placeholder image"
-                  />
+                  <img :src="user.image" alt="Placeholder image" />
                 </figure>
               </div>
               <div class="media-content" style="margin-top: 12px">
                 <p class="title is-4">{{user.username}}</p>
-                <p>Points {{user.points}}</p>
-                <p>Credit {{user.credit}}</p>
+                <p>Points: {{user.points}}</p>
+                <p>Credit: {{user.credit}}</p>
               </div>
               <div class="media-right" style="margin-top: 12px">
-                <button class="button is-danger is-fullwidth" v-if="user.disabled">
+                <button class="button is-danger is-fullwidth is-light" v-if="user.disabled">
                   <i class="fas fa-ban"></i>
                 </button>
-                <button class="button is-link is-fullwidth" v-if="!user.disabled">
+                <button class="button is-link is-fullwidth is-light" v-if="!user.disabled">
                   <i class="fas fa-unlock"></i>
                 </button>
                 <br />
-                <button class="button is-warning is-fullwidth" v-if="user.idType == 1">
+                <button class="button is-warning is-fullwidth is-light" v-if="user.idType == 1">
                   <i class="fas fa-user"></i>
                 </button>
-                <button class="button is-success is-fullwidth" v-if="user.idType == 2">
+                <button class="button is-success is-fullwidth is-light" v-if="user.idType == 2">
                   <i class="fas fa-users-cog"></i>
                 </button>
               </div>
@@ -128,10 +125,10 @@
               <abbr title="Position">ID</abbr>
             </th>
             <th>Username</th>
-            <th>Name</th>            
+            <th>Name</th>
             <th>Type</th>
             <th>Status</th>
-            <th>Credits</th>
+            <th>Credit</th>
             <th>Points</th>
             <th>Actions</th>
           </tr>
@@ -139,10 +136,10 @@
         <tbody>
           <!-- v-if="filteredCompaniesFunc != 0" -->
 
-          <tr v-for="(user,i) in users" :key="i">
+          <tr v-for="(user,i) in filteredUsers" :key="i">
             <th>
               <figure class="image is-32x32">
-                <img src="https://pngimage.net/wp-content/uploads/2018/05/default-user-profile-image-png-6.png" />
+                <img :src="user.image" />
               </figure>
             </th>
             <th>{{user.idUser}}</th>
@@ -154,21 +151,39 @@
             <th>{{user.credit}}</th>
             <th>{{user.points}}</th>
             <th width="20%">
-                <button class="button is-info"  style="width: 50px">
-                  <i class="fas fa-info-circle"></i>
-                </button>
-              <button class="button is-danger " v-if="user.disabled" style="margin-left: 10px; width: 50px">
-                  <i class="fas fa-ban"></i>
-                </button>
-                <button class="button is-link " v-if="!user.disabled" style="margin-left: 10px; width: 50px">
-                  <i class="fas fa-unlock"></i>
-                </button>
-                <button class="button is-warning " v-if="user.idType == 1" style="margin-left: 10px; width: 50px">
-                  <i class="fas fa-user"></i>
-                </button>
-                <button class="button is-success " v-if="user.idType == 2" style="margin-left: 10px; width: 50px">
-                  <i class="fas fa-users-cog"></i>
-                </button>
+              <button class="button is-info" style="width: 50px">
+                <i class="fas fa-info-circle"></i>
+              </button>
+              <button
+                class="button is-danger is-light"
+                v-if="user.disabled"
+                style="margin-left: 10px; width: 50px"
+              >
+                <i class="fas fa-ban"></i>
+              </button>
+              <button
+                class="button is-link is-light"
+                v-if="!user.disabled"
+                style="margin-left: 10px; width: 50px"
+              >
+                <i class="fas fa-unlock"></i>
+              </button>
+              <button
+                class="button is-warning is-light"
+                v-if="user.idType == 1"
+                style="margin-left: 10px; width: 50px"
+                @click="adminButton(2, user.username, user.idUser, i)"
+              >
+                <i class="fas fa-user"></i>
+              </button>
+              <button
+                class="button is-success is-light"
+                v-if="user.idType == 2"
+                style="margin-left: 10px; width: 50px"
+                @click="adminButton(1, user.username, user.idUser, i)"
+              >
+                <i class="fas fa-users-cog"></i>
+              </button>
             </th>
           </tr>
         </tbody>
@@ -183,7 +198,9 @@
 import SideBar from "../components/sideBar";
 
 //Axios
-import { getAllUsers } from "../API/apiUser";
+import { getAllUsers, AdminUser } from "../API/apiUser";
+
+import { ToastProgrammatic as toast } from "buefy";
 
 export default {
   components: {
@@ -194,11 +211,108 @@ export default {
       users: [],
       inputSearch: "",
       view: 2,
-      filterSelected: 1
+      filterSelected: 1,
+      filteredUsers: []
     };
   },
   methods: {
-    filteredUsersFunc() {},
+    infoButton() {},
+    blockButton() {},
+    adminButton(action, name, id, pos) {
+      if (action == 2) {
+        this.$buefy.dialog.confirm({
+          title: "Demote " + name,
+          message:
+            "Are you sure you want to take off <b>admin privileges</b> to" +
+            name +
+            "?",
+          confirmText: "Demote admin",
+          type: "is-danger",
+          hasIcon: true,
+          onConfirm: () => {
+            AdminUser(id, { idType: action })
+              .then(() => {
+                toast.open({
+                  type: "is-warning",
+                  message: name + " was demoted"
+                });
+
+                this.users[pos].idType = action;
+              })
+              .catch(error => {
+                toast.open({
+                  message: error,
+                  type: "is-danger"
+                });
+              });
+          }
+        });
+      } else if (action == 1) {
+        this.$buefy.dialog.confirm({
+          title: "Give admin to " + name,
+          message:
+            "Are you sure you want to give <b>admin privileges</b> to" +
+            name +
+            "?",
+          confirmText: "Give admin",
+          type: "is-warning",
+          hasIcon: true,
+          onConfirm: () => {
+            AdminUser(id, { idType: action })
+              .then(() => {
+                toast.open({
+                  type: "is-warning",
+                  message: name + " is now a admin"
+                });
+
+                this.users[pos].idType = action;
+              })
+              .catch(error => {
+                toast.open({
+                  message: error,
+                  type: "is-danger"
+                });
+              });
+          }
+        });
+      }
+    },
+    filteredUsersFunc() {
+      if (this.users) {
+        //Search for words
+        this.filteredUsers = this.users.filter(user => {
+          return (
+            user.username
+              .toString()
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+              .indexOf(this.inputSearch.toLowerCase()) >= 0
+          );
+        });
+      }
+      /* eslint-disable */
+      console.log(this.filterSelected);
+
+      //Filter
+      if (this.filterSelected == 1) {
+        this.filteredUsers = this.filteredUsers.sort((a, b) =>
+          a.idUser > b.idUser ? 1 : b.idUser > a.idUser ? -1 : 0
+        );
+      } else if (this.filterSelected == 2) {
+        this.filteredUsers = this.filteredUsers.sort((a, b) =>
+          a.name > b.name ? 1 : b.name > a.name ? -1 : 0
+        );
+      } else if (this.filterSelected == 3) {
+        this.filteredUsers = this.filteredUsers.sort((b, a) =>
+          a.points > b.points ? 1 : b.points > a.points ? -1 : 0
+        );
+      } else if (this.filterSelected == 4) {
+        this.filteredUsers = this.filteredUsers.sort((b, a) =>
+          a.credit > b.credit ? 1 : b.credit > a.credit ? -1 : 0
+        );
+      }
+    },
     pageActive(n) {
       if (n == 1) {
         this.view = 1;
@@ -219,8 +333,14 @@ export default {
     }
     getAllUsers().then(response => {
       this.users = response.data.data;
-      /* eslint-disable */
-      console.log(response.data.data);
+      this.users = this.users.filter(user => {
+        if (user.verified == 1) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      this.filteredUsers = this.users;
     });
   }
 };
