@@ -1,5 +1,5 @@
-import {get, post, put, remove} from  '../Utils/https'
+import {get} from  '../Utils/https' //, post, put, remove
 
-export function getAllSensors() {
-    return get("/sensors")
+export function getAllOrders() {
+    return get("/order/withsensors")
 }

@@ -7,11 +7,11 @@
 
     <!--  -->
     <!--  -->
-    <div>
+    <!-- <div>
       <table class="table is-fullwidth">
         <thead>
           <tr>
-            <th></th>
+
             <th>
               <abbr title="Position">ID</abbr>
             </th>
@@ -24,14 +24,9 @@
           </tr>
         </thead>
         <tbody>
-          <!-- v-if="filteredCompaniesFunc != 0" -->
 
           <tr v-for="(user,i) in users" :key="i">
-            <th>
-              <figure class="image is-32x32">
-                <img :src="user.image" />
-              </figure>
-            </th>
+            
             <th>{{user.idUser}}</th>
             <th>{{user.username}}</th>
 
@@ -58,7 +53,7 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </div> -->
     <!-- Table -->
   </section>
 </body>
@@ -67,9 +62,9 @@
 <script>
 import SideBar from "../components/sideBar";
 //Axios
-//import { getAllSensors, getAllSensorOrders, getAllOrders } from "../API/apiUser";
+import { getAllOrders } from "../API/apiOrder"; //getAllSensors, getAllSensorOrders, 
 
-import { ToastProgrammatic as toast } from "buefy";
+//import { ToastProgrammatic as toast } from "buefy";
 
 export default {
   components: {
@@ -77,73 +72,77 @@ export default {
   },
   data() {
     return {
+      orders: [],
       users: []
     };
   },
   methods: {
-    acceptUser(name, id, pos) {
-      this.$buefy.dialog.confirm({
-        title: "Confirm " + name,
-        message: "Are you sure you want to confirm this account: " + name + "?",
-        confirmText: "Validate Account",
-        type: "is-success",
-        hasIcon: true,
-        onConfirm: () => {
-             /* eslint-disable */
-             console.log(id)
-          validateUser(id)
-            .then(() => {
-              toast.open({
-                type: "is-success",
-                message: name + " validated"
-              });
+    // acceptUser(name, id, pos) {
+    //   this.$buefy.dialog.confirm({
+    //     title: "Confirm " + name,
+    //     message: "Are you sure you want to confirm this account: " + name + "?",
+    //     confirmText: "Validate Account",
+    //     type: "is-success",
+    //     hasIcon: true,
+    //     onConfirm: () => {
+    //          /* eslint-disable */
+    //          console.log(id)
+    //       validateUser(id)
+    //         .then(() => {
+    //           toast.open({
+    //             type: "is-success",
+    //             message: name + " validated"
+    //           });
 
-              this.users.splice(pos, 1);
-            })
-            .catch(error => {
-              toast.open({
-                message: error,
-                type: "is-danger"
-              });
-            });
-        }
-      });
-    },
-    deleteUser(name, id, pos) {
-      this.$buefy.dialog.confirm({
-        title: "Delete " + name,
-        message:
-          "Are you sure you want to not confirm this account: " +
-          name +
-          "? The user will be deleted",
-        confirmText: "Delete User",
-        type: "is-danger",
-        hasIcon: true,
-        onConfirm: () => {
-          removeUser(id)
-            .then(() => {
-              toast.open({
-                type: "is-warning",
-                message: name + " deleted"
-              });
+    //           this.users.splice(pos, 1);
+    //         })
+    //         .catch(error => {
+    //           toast.open({
+    //             message: error,
+    //             type: "is-danger"
+    //           });
+    //         });
+    //     }
+    //   });
+    // },
+    // deleteUser(name, id, pos) {
+    //   this.$buefy.dialog.confirm({
+    //     title: "Delete " + name,
+    //     message:
+    //       "Are you sure you want to not confirm this account: " +
+    //       name +
+    //       "? The user will be deleted",
+    //     confirmText: "Delete User",
+    //     type: "is-danger",
+    //     hasIcon: true,
+    //     onConfirm: () => {
+    //       removeUser(id)
+    //         .then(() => {
+    //           toast.open({
+    //             type: "is-warning",
+    //             message: name + " deleted"
+    //           });
 
-              this.users.splice(pos, 1);
-            })
-            .catch(error => {
-              toast.open({
-                message: error,
-                type: "is-danger"
-              });
-            });
-        }
-      });
-    }
+    //           this.users.splice(pos, 1);
+    //         })
+    //         .catch(error => {
+    //           toast.open({
+    //             message: error,
+    //             type: "is-danger"
+    //           });
+    //         });
+    //     }
+    //   });
+    // }
   },
   created() {
-    getAllUsers().then(response => {
-      this.users = response.data.data;
-      this.users = this.users.filter(user => {
-        if (user.verified == 0) {
+    getAllOrders().then(response => {
+        
+      this.orders = response.data.data;
+      /* eslint-disable */
+        console.log(this.orders)
+      this.orders = this.orders.filter(order => {
+        if (order.active == 0) {
           return true;
         } else {
           return false;
