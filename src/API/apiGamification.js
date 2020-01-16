@@ -1,6 +1,6 @@
 import {get,post} from  '../Utils/https'
 
-export function getAllSensors() {
+export function getAllAchievements() {
     return get("/achievement/all")
 }
 

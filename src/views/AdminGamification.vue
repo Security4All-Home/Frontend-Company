@@ -29,12 +29,12 @@
             <div class="media">
               <div class="media-left is-2" style="margin-top: 12px;margin-left: 12px ">
                 <figure class="image is-64x64">
-                  <img :src="ach.imageDefault" alt="Placeholder image" />
+                  <img :src="ach.imageType.image" alt="Placeholder image" />
                 </figure>
               </div>
               <div class="media-content" style="margin-top: 12px">
                 <p class="title is-4">{{ach.description}}</p>
-                <p>Type: {{ach.type}}</p>
+                <p>Type: {{ach.imageType.type}}</p>
                 <p>Goal: {{ach.goal}}</p>
               </div>
               <div class="media-right" style="margin-top: 12px">
@@ -60,7 +60,7 @@
       </div>
     </div>
   </section>
-<!-- 
+
 
   <b-modal :active.sync="addModal" has-modal-card>
     <form action>
@@ -125,7 +125,7 @@
         </footer>
       </div>
     </form>
-  </b-modal> -->
+  </b-modal>
 </body>
 </template>
 
@@ -170,6 +170,8 @@ export default {
   methods: {
     addTheAchievement() {
       if (this.createAch.description != "" && this.createAch.goal != 0) {
+        /* eslint-disable */
+        console.log(this.createAch)
         addAchievement(this.createAch)
           .then(() => {
             toast.open({
@@ -192,10 +194,10 @@ export default {
     }
   },
   created() {
-    getAllAchievements()
-    .then(response => {
+    getAllAchievements().then(response => {
       this.achievements = response.data.data;
-      
+      /* eslint-disable */ 
+      console.log(this.achievements)
     });
   }
 };
