@@ -105,7 +105,10 @@
                 <p>Price: {{sensor.price}}</p>
               </div>
               <div class="media-right" style="margin-top: 12px">
-                <button class="button is-info is-fullwidth is-light" @click="openEditSensor(sensor.idSensor)">
+                <button
+                  class="button is-info is-fullwidth is-light"
+                  @click="openEditSensor(sensor.idSensor)"
+                >
                   <i class="fas fa-edit"></i>
                 </button>
                 <br />
@@ -165,7 +168,7 @@
               >
                 <i class="fas fa-arrow-circle-up"></i>
               </button>
-              <button 
+              <button
                 class="button is-danger is-light"
                 style="margin-left: 10px"
                 @click="deleteSensorById(sensor.name, sensor.idSensor, i)"
@@ -310,7 +313,7 @@ export default {
   },
   computed: {},
   methods: {
-    deleteSensorById(name, id,pos) {
+    deleteSensorById(name, id, pos) {
       this.$buefy.dialog.confirm({
         title: "Deleting " + name,
         message:
@@ -326,7 +329,7 @@ export default {
                 message: name + " deleted"
               });
 
-              this.sensors.splice(pos,1)
+              this.sensors.splice(pos, 1);
             })
             .catch(error => {
               toast.open({
@@ -422,7 +425,9 @@ export default {
               .indexOf(this.inputSearch.toLowerCase()) >= 0
           );
         });
- 
+
+        /* eslint-disable */
+
         //Filter
         this.filteredSensors = this.filteredSensors.sort(sensor => {
           if (
@@ -434,6 +439,7 @@ export default {
             return false;
           }
         });
+        console.log(this.filteredSensors);
       }
     },
     pageActive(n) {
