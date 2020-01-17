@@ -5,26 +5,25 @@
     <div class="tile is-ancestor has-text-centered">
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <p v-if="values[0]<2" class="title">0</p>
-          <CountUp v-if="values[0]>2"></CountUp>
+          <CountUp v-bind:endValue=" parseInt(values[0])"></CountUp>
           <p class="subtitle">Users</p>
         </article>
       </div>
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <CountUp v-bind:endValue="values[1]"></CountUp>
+          <CountUp v-bind:endValue="parseInt(values[1])"></CountUp>
           <p class="subtitle">Sensors Sold</p>
         </article>
       </div>
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <CountUp v-bind:endValue="values[2]"></CountUp>
+          <CountUp v-bind:endValue="parseInt(values[2])"></CountUp>
           <p class="subtitle">Installation Requests</p>
         </article>
       </div>
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <CountUp v-bind:endValue="values[3]"></CountUp>
+          <CountUp v-bind:endValue="parseInt(values[3])"></CountUp>
           <p class="subtitle">Orders</p>
         </article>
       </div>
@@ -34,26 +33,26 @@
     <div class="tile is-ancestor has-text-centered">
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <CountUp v-bind:endValue="values[4]"></CountUp>
+          <CountUp v-bind:endValue="parseInt(values[4])"></CountUp>
           <p class="subtitle">Number of houses</p>
         </article>
       </div>
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <CountUp v-bind:endValue="values[5]"></CountUp>
+          <CountUp v-bind:endValue="parseInt(values[5])"></CountUp>
           <p class="subtitle">Average sensor per house</p>
         </article>
       </div>
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <CountUp v-bind:endValue="values[6]"></CountUp>
+          <CountUp v-bind:endValue="parseInt(values[6])"></CountUp>
           <p class="subtitle">Users to validate</p>
         </article>
       </div>
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
-          <CountUp v-bind:endValue="values[7]"></CountUp>
-          <p class="subtitle">Exceptions</p>
+          <CountUp v-bind:endValue="parseInt(values[7])"></CountUp>
+          <p class="subtitle">Number or achievements</p>
         </article>
       </div>
     </div>
@@ -124,9 +123,6 @@
 import SideBar from "../components/sideBar";
 import CountUp from "../components/countUp";
 
-//Axios
-import { getAllUsers } from "../API/apiUser";
-
 export default {
   components: {
     SideBar,
@@ -135,7 +131,7 @@ export default {
   data() {
     return {
       users: [],
-      values: [0, 0, 0, 10],
+      values: [0, 0, 0, 30000],
       events: [
         {
           name: "O utilizador xpto45 carregou no botão de emergencia.",
@@ -198,11 +194,12 @@ export default {
     };
   },
   created() {
-    getAllUsers().then(response => {
-        this.users = response.data.data;
-        this.values[0] = this.users.length;
-        
-      });
+
+    if(localStorage.getItem("countUp")){
+      this.values = localStorage.getItem("countUp");
+      this.values = this.values.split(",")
+      console.log(this.values)
+    }
       
   },
   methods: {

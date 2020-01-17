@@ -65,15 +65,29 @@
 </template>
 
 <script>
+import { getAllUsers } from "../API/apiUser";
+
 export default {
   name: "Home",
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+      //
+      users: []
     };
   },
-  created() {},
+  created() {
+    getAllUsers().then(response => {
+      this.users = response.data.data;
+
+      let temp = this.users.length;
+
+      setInterval(function() {
+        localStorage.setItem("countUp", [temp, 5, 6, 7, 8, 9, 10, 11]);
+      }, 5000);
+    });
+  },
   methods: {
     goTo(path) {
       localStorage.setItem("page", 0);
