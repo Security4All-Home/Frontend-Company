@@ -427,19 +427,32 @@ export default {
         });
 
         /* eslint-disable */
-
-        //Filter
-        this.filteredSensors = this.filteredSensors.sort(sensor => {
+        console.log(this.filteredSensors, "tu");
+        this.filteredSensors.forEach((sensor, i) => {
           if (
             sensor.idCategory == this.CategorySelected ||
             this.CategorySelected == -1
           ) {
-            return true;
+            console.log("entrei");
           } else {
-            return false;
+            this.filteredSensors.splice(i, 1);
           }
         });
-        console.log(this.filteredSensors);
+        //Filter
+        // this.filteredSensors = this.filteredSensors.sort((sensor,i) => {
+        //   console.log(sensor.idCategory,this.CategorySelected);
+        //   if (
+        //     sensor.idCategory == this.CategorySelected ||
+        //     this.CategorySelected == -1
+        //   ) {
+        //     return true;
+        //   } else {
+        //     console.log("entrei");
+        //     this.filteredSensors.splice(i,1)
+        //     return false;
+        //   }
+        // });
+        console.log(this.filteredSensors, "tu");
       }
     },
     pageActive(n) {

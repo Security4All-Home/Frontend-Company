@@ -2,7 +2,7 @@
 <body>
   <SideBar></SideBar>
  
-  <section class="column is-4 is-offset-5 box" style="margin-top: 50px">
+  <section class="column is-4 is-offset-5 box" style="margin-top: 40px">
     <h1 class="title is-3 has-text-centered" >New Sensor</h1>
 
     <div class="field">
@@ -32,6 +32,18 @@
           type="text"
           placeholder="Link of the image"
           v-model="link"
+          required
+        />
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">Specs</label>
+      <div class="control">
+        <input
+          class="input"
+          type="text"
+          placeholder="Write here the specs, separeted with ','"
+          v-model="specs"
           required
         />
       </div>
@@ -105,6 +117,7 @@ export default {
       stock: 0,
       price: 0,
       link: "",
+      specs: "",
       categorySelected: null
     };
   },
@@ -116,7 +129,8 @@ export default {
         stock: this.stock,
         price: this.price,
         image: this.link,
-        idCategory: this.categorySelected
+        specifications: this.specs,
+        idCategory: this.categorySelected,
       };
       addSensor(this.sensor)
         .then(() => {
@@ -129,6 +143,7 @@ export default {
           this.stock = 0
           this.price = 0
           this.link = ""
+          this.specs = ""
           this.categorySelected = null
         })
         .catch(error => {

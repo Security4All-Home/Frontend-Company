@@ -74,25 +74,25 @@
             <div class="content">
               <table class="table is-striped is-horable">
                 <tbody>
-                  <tr v-for="(event,i) in filterEvents(events)" :key="i">
+                  <tr v-for="(event,i) in filterEvents(alerts)" :key="i">
                     <td width="5%">
                       <i class="far fa-bell"></i>
                     </td>
-                    <td width="70%">{{event.name}}</td>
-                    <td>{{event.date}}</td>
+                    <td width="70%">{{event.alertText}}</td>
+                    <td>{{event.createdAt}}</td>
 
                     <td>
                       <a
                         class="button is-small is-danger is-fullwidth"
-                        v-if="event.type=='danger'"
+                        v-if="event.alertType=='danger'"
                       >Alert</a>
                       <a
                         class="button is-small is-warning is-fullwidth"
-                        v-if="event.type=='warning'"
+                        v-if="event.alertType=='warning'"
                       >Stock Out</a>
                       <a
                         class="button is-small is-success is-fullwidth"
-                        v-if="event.type=='success'"
+                        v-if="event.alertType=='success'"
                       >Info</a>
                     </td>
                   </tr>
@@ -122,6 +122,8 @@
 <script>
 import SideBar from "../components/sideBar";
 import CountUp from "../components/countUp";
+import { getAlerts} from "../API/apiAlerts";
+
 
 export default {
   components: {
@@ -130,8 +132,8 @@ export default {
   },
   data() {
     return {
-      users: [],
-      values: [0, 0, 0, 30000],
+      alerts: [],
+      values: [],
       events: [
         {
           name: "O utilizador xpto45 carregou no botão de emergencia.",
@@ -200,6 +202,10 @@ export default {
       this.values = this.values.split(",")
       console.log(this.values)
     }
+
+    getAlerts().then(response => {
+      this.alerts = response.data.data;
+    });
       
   },
   methods: {

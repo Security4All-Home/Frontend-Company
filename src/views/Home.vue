@@ -65,7 +65,8 @@
 </template>
 
 <script>
-import { getAllUsers } from "../API/apiUser";
+import { getStat1, getStat2, getStat3, getStat4, getStat5, getStat6, getStat7, getStat8 } from "../API/apiStats";
+
 
 export default {
   name: "Home",
@@ -74,19 +75,55 @@ export default {
       email: "",
       password: "",
       //
-      users: []
-    };
+      a1: null,
+      a2: null,
+      a3: null,
+      a4: null,
+      a5: null,
+      a6: null,
+      a7: null,
+      a8: null,
+      
+      };
   },
-  created() {
-    getAllUsers().then(response => {
-      this.users = response.data.data;
+  created() {  
 
-      let temp = this.users.length;
 
-      setInterval(function() {
-        localStorage.setItem("countUp", [temp, 5, 6, 7, 8, 9, 10, 11]);
-      }, 5000);
-    });
+    setInterval(function() {
+      /* eslint-disable */
+
+
+      getStat1().then(response => {
+      this.a1 = response.data.data[0].numUsers;
+      });
+      getStat2().then(response => {
+      this.a2 = response.data.data[0].Quantity;   
+      });
+      getStat3().then(response => {
+      this.a3 = response.data.data[0].Instalation_Requests;   
+      });
+      getStat4().then(response => {
+      this.a4 = response.data.data[0].Orders_To_Pay;   
+      });
+      getStat5().then(response => {
+      this.a5 = response.data.data[0].TotalHouses;   
+      });
+      getStat6().then(response => {
+      this.a6 = response.data.data;   
+      });
+      getStat7().then(response => {
+      this.a7 = response.data.data[0].totalUsersNotVerified;   
+      });
+      getStat8().then(response => {
+      this.a8 = response.data.data;   
+      });
+
+      if(this.a1 >= 1 && this.a2 >= 1 && this.a3 >= 1 && this.a4 >= 1 && this.a5 >= 1 ){
+        let temp = [this.a1,this.a2,this.a3,this.a4,this.a5,this.a6,this.a7,this.a8]
+        localStorage.setItem("countUp", temp);
+      }
+    
+    }, 10000);
   },
   methods: {
     goTo(path) {
