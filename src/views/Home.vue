@@ -42,9 +42,9 @@
                 </div>
               </div>
               <!-- @click="goTo('/dashboard')" -->
-              <!-- verifyUser() -->
+              <!--  -->
               <br />
-              <button @click="goTo('/dashboard')" class="button is-block isPrimaryBGColor is-fullwidth">
+              <button @click="verifyUser()" class="button is-block isPrimaryBGColor is-fullwidth">
                 Login
                 <i class="fas fa-sign-in-alt"></i>
               </button>
@@ -63,9 +63,18 @@
 </template>
 
 <script>
-import { getStat1, getStat2, getStat3, getStat4, getStat5, getStat6, getStat7, getStat8 } from "../API/apiStats";
-// import {authUser} from "../API/apiAuth";
-// import { ToastProgrammatic as toast } from "buefy";
+import {
+  getStat1,
+  getStat2,
+  getStat3,
+  getStat4,
+  getStat5,
+  getStat6,
+  getStat7,
+  getStat8
+} from "../API/apiStats";
+import { authUser } from "../API/apiAuth";
+import { ToastProgrammatic as toast } from "buefy";
 
 export default {
   name: "Home",
@@ -81,69 +90,86 @@ export default {
       a5: null,
       a6: null,
       a7: null,
-      a8: null,
-      
-      };
+      a8: null
+    };
   },
-  created() {  
-
-
+  created() {
     setInterval(function() {
       /* eslint-disable */
 
-
       getStat1().then(response => {
-      this.a1 = response.data.data[0].numUsers;
+        this.a1 = response.data.data[0].numUsers;
       });
       getStat2().then(response => {
-      this.a2 = response.data.data[0].Quantity;   
+        this.a2 = response.data.data[0].Quantity;
       });
       getStat3().then(response => {
-      this.a3 = response.data.data[0].Instalation_Requests;   
+        this.a3 = response.data.data[0].Instalation_Requests;
       });
       getStat4().then(response => {
-      this.a4 = response.data.data[0].Orders_To_Pay;   
+        this.a4 = response.data.data[0].Orders_To_Pay;
       });
       getStat5().then(response => {
-      this.a5 = response.data.data[0].TotalHouses;   
+        this.a5 = response.data.data[0].TotalHouses;
       });
       getStat6().then(response => {
-      this.a6 = response.data.data;   
+        this.a6 = response.data.data;
       });
       getStat7().then(response => {
-      this.a7 = response.data.data[0].totalUsersNotVerified;   
+        this.a7 = response.data.data[0].totalUsersNotVerified;
       });
       getStat8().then(response => {
-      this.a8 = response.data.data;   
+        this.a8 = response.data.data;
       });
 
-      if(this.a1 >= 1 && this.a2 >= 1 && this.a3 >= 1 && this.a4 >= 1 && this.a5 >= 1 ){
-        let temp = [this.a1,this.a2,this.a3,this.a4,this.a5,this.a6,this.a7,this.a8]
+      if (
+        this.a1 >= 1 &&
+        this.a2 >= 1 &&
+        this.a3 >= 1 &&
+        this.a4 >= 1 &&
+        this.a5 >= 1
+      ) {
+        let temp = [
+          this.a1,
+          this.a2,
+          this.a3,
+          this.a4,
+          this.a5,
+          this.a6,
+          this.a7,
+          this.a8
+        ];
         localStorage.setItem("countUp", temp);
       }
-    
     }, 50000);
   },
   methods: {
-    // verifyUser(){
-    //   if(this.password && this.email){
-    //     let temp = {email: this.email, password:this.password}
-    //     authUser(temp)
-    //     .then(response => {
-    //       /* eslint-disable */
-    //       console.log(response)
-    //       localStorage.setItem("token", response.headers["x-access-token"]);
-    //       this.$router.push("/dashboard");
-
-    //       })
-    //       .catch(error => {
-    //         toast.open({
-    //           message: error,
-    //           type: "is-danger"
-    //         });
-    //       });
-    //   }
-    // },
+    verifyUser() {
+      if (this.password && this.email) {
+        let temp = { email: this.email, password: this.password };
+        authUser(temp)
+          .then(response => {
+            /* eslint-disable */
+            console.log(response);
+            //localStorage.setItem("token", response.headers["x-access-token"]);
+            if (response.data.data.idType == 1) {
+              localStorage.setItem("user", response.data.data);
+              this.$router.push("/dashboard");
+            } else {
+              toast.open({
+              message: error,
+              type: "is-danger"
+            });
+            }
+          })
+          .catch(error => {
+            toast.open({
+              message: error,
+              type: "is-danger"
+            });
+          });
+      }
+    },
     goTo(path) {
       localStorage.setItem("page", 0);
       this.$router.push(path);
