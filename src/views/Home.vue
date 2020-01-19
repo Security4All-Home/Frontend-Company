@@ -42,8 +42,9 @@
                 </div>
               </div>
               <!-- @click="goTo('/dashboard')" -->
+              <!-- verifyUser() -->
               <br />
-              <button @click="verifyUser()" class="button is-block isPrimaryBGColor is-fullwidth">
+              <button @click="goTo('/dashboard')" class="button is-block isPrimaryBGColor is-fullwidth">
                 Login
                 <i class="fas fa-sign-in-alt"></i>
               </button>
@@ -63,8 +64,8 @@
 
 <script>
 import { getStat1, getStat2, getStat3, getStat4, getStat5, getStat6, getStat7, getStat8 } from "../API/apiStats";
-import {authUser} from "../API/apiAuth";
-import { ToastProgrammatic as toast } from "buefy";
+// import {authUser} from "../API/apiAuth";
+// import { ToastProgrammatic as toast } from "buefy";
 
 export default {
   name: "Home",
@@ -124,25 +125,25 @@ export default {
     }, 50000);
   },
   methods: {
-    verifyUser(){
-      if(this.password && this.email){
-        let temp = {email: this.email, password:this.password}
-        authUser(temp)
-        .then(response => {
-          /* eslint-disable */
-          console.log(response)
-          localStorage.setItem("token", response.headers["x-access-token"]);
-          //this.$router.push("/dashboard");
+    // verifyUser(){
+    //   if(this.password && this.email){
+    //     let temp = {email: this.email, password:this.password}
+    //     authUser(temp)
+    //     .then(response => {
+    //       /* eslint-disable */
+    //       console.log(response)
+    //       localStorage.setItem("token", response.headers["x-access-token"]);
+    //       this.$router.push("/dashboard");
 
-          })
-          .catch(error => {
-            toast.open({
-              message: error,
-              type: "is-danger"
-            });
-          });
-      }
-    },
+    //       })
+    //       .catch(error => {
+    //         toast.open({
+    //           message: error,
+    //           type: "is-danger"
+    //         });
+    //       });
+    //   }
+    // },
     goTo(path) {
       localStorage.setItem("page", 0);
       this.$router.push(path);

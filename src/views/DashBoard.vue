@@ -74,7 +74,7 @@
             <div class="content">
               <table class="table is-striped is-horable">
                 <tbody>
-                  <tr v-for="(event,i) in filterEvents(alerts)" :key="i">
+                  <tr v-for="(event,i) in alerts" :key="i">
                     <td width="5%">
                       <i class="far fa-bell"></i>
                     </td>
@@ -84,15 +84,15 @@
                     <td>
                       <a
                         class="button is-small is-danger is-fullwidth"
-                        v-if="event.alertType=='danger'"
+                        v-if="event.alertType=='Danger'"
                       >Alert</a>
                       <a
                         class="button is-small is-warning is-fullwidth"
-                        v-if="event.alertType=='warning'"
+                        v-if="event.alertType=='Warning'"
                       >Stock Out</a>
                       <a
                         class="button is-small is-success is-fullwidth"
-                        v-if="event.alertType=='success'"
+                        v-if="event.alertType=='Success'"
                       >Info</a>
                     </td>
                   </tr>
@@ -205,6 +205,13 @@ export default {
 
     getAlerts().then(response => {
       this.alerts = response.data.data;
+      this.alerts.forEach((alert,i) => {
+        /* eslint-disable */
+        
+        let mydate = new Date(this.alerts[i].createdAt);
+        this.alerts[i].createdAt = this.alerts[i].createdAt.slice(0,10)
+
+      });
     });
       
   },
