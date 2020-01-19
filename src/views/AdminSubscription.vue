@@ -23,7 +23,7 @@
                 <p>Price: {{pack.price}}</p>
               </div>
               <div class="media-right" style="margin-top: 12px">
-                <button class="button is-success is-fullwidth is-light"><!--  @click="editAch(i)"-->
+                <button class="button is-success is-fullwidth is-light" @click="editP(i)">
                   <i class="fas fa-edit"></i>
                 </button>
                 <br />
@@ -35,14 +35,14 @@
     </div>
   </section>
 
-<!--   
+  
   <b-modal :active.sync="editModal" has-modal-card>
     <form action>
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
           <div class="column modal-title">
-            <p class="modal-card-title">Edit {{editDescription}}</p>
+            <p class="modal-card-title">Edit Package</p>
           </div>
         </header>
         <section class="modal-card-body">
@@ -52,39 +52,40 @@
                 <b-input
                   placeholder="Achievement description"
                   icon-pack="fas"
-                  icon="file-signature"
+                  icon="signature"
                   required
-                  v-model="editDescription"
+                  v-model="editName"
                 ></b-input>
               </b-field>
             </div>
           </div>
           <div class="columns">
-            <div class="column is-half">
-              <b-field label="Achievement goal">
+            <div class="column">
+              <b-field label="Edit description">
                 <b-input
-                  placeholder="Define the goal for this achievement"
+                  placeholder="Define the description"
                   icon-pack="fas"
-                  icon="bullseye"
-                  type="number"
+                  icon="file-signature"
+                  type="text"
                   min="0"
                   required
-                  v-model="editGoal"
+                  v-model="editText"
                 ></b-input>
               </b-field>
             </div>
-            <div class="column is-half">
-              <b-field label="Choose the type">
-                <b-select
-                  placeholder="Type of achievement"
+            </div>
+            <div class="columns">
+            <div class="column">
+              <b-field label="Edit the price">
+                <b-input
+                  placeholder="Define the price"
                   icon-pack="fas"
-                  icon="trophy"
-                  v-model="ediType"
-                  expanded
+                  icon="money-bill-wave"
+                  type="number"
+                  min="0"
                   required
-                >
-                  <option v-for="(a,i) in achImageType" :value="a" :key="i">{{ a.type }}</option>
-                </b-select>
+                  v-model="editPrice"
+                ></b-input>
               </b-field>
             </div>
           </div>
@@ -95,13 +96,14 @@
         </footer>
       </div>
     </form>
-  </b-modal> -->
+  </b-modal>
 </body>
 </template>
 <script>
 import SideBar from "../components/sideBar";
+import { ToastProgrammatic as toast } from "buefy";
 
-import { getAllPackages } from "../API/apiPackages";
+import { getAllPackages, editPack } from "../API/apiPackages";
 
 export default {
   components: {
@@ -109,12 +111,42 @@ export default {
   },
   data() {
     return {
-      editmOdal: false,
-      packages: []
+      editModal: false,
+      packages: [],
+      editName: "",
+      editText: "",
+      editPrice: "",
     };
   },
   methods: {
-    // editPackage() {}
+    editP(temp){
+      this.editName = this.packages[temp].name
+      this.editText = this.packages[temp].description
+      this.editPrice = this.packages[temp].price
+
+      this.editModal = true
+
+    },
+    editPackage() {
+      let temp = {
+        name: this.editName,
+        description: this.editText,
+        price: this.editPrice
+      }
+      editPack(temp)
+      .then(() => {         
+
+            this.editModal = false;
+            location.reload();
+          })
+          .catch(error => {
+            toast.open({
+              message: error,
+              type: "is-danger"
+            });
+          });
+
+    }
   },
   created() {
     getAllPackages().then(response => {
