@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "postinstall": "npm run build",
+    "postinstall": "if test '$NODE_ENV' = 'production' ; then npm run build ; fi ",
     "start": "node server.js"
   },
   "dependencies": {
@@ -14,6 +14,7 @@
     "buefy": "^0.8.6",
     "bulma": "^0.8.0",
     "bulma-extensions": "^6.2.7",
+    "cookie-parser": "^1.4.4",
     "core-js": "^3.3.2",
     "countup.js": "^2.0.4",
     "dotenv": "^8.2.0",
