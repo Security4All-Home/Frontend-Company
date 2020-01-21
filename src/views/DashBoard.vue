@@ -1,7 +1,7 @@
 <template>
 <body>
   <SideBar class="is-hidden-mobile"></SideBar>
-  <section class="info-tiles column is-10 is-offset-2">
+  <section class="info-tiles column is-10 is-offset-2 is-hidden-mobile">
     <div class="tile is-ancestor has-text-centered">
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
@@ -29,7 +29,7 @@
       </div>
     </div>
   </section>
-  <section class="info-tiles column is-10 is-offset-2">
+  <section class="info-tiles column is-10 is-offset-2 is-hidden-mobile">
     <div class="tile is-ancestor has-text-centered">
       <div class="tile is-parent">
         <article class="tile is-child box hover-item">
@@ -58,7 +58,7 @@
     </div>
   </section>
 
-  <section class="column is-10 is-offset-3">
+  <section class="column is-10 is-offset-3 is-hidden-mobile">
     <div class="columns">
       <div class="column is-9">
         <div class="card events-card">
@@ -116,106 +116,141 @@
       </div>
     </div>
   </section>
+  <section class="is-hidden-tablet isSecondaryBGColor">
+    <div class="container">
+      <img src="../assets/Images/1.png" width="300" class="center" style="margin-bottom:50px" />
+
+      <p class="error has-text-centered">{{ error }}</p>
+
+      <qrcode-stream @decode="onDecode" @init="onInit" class="center" />
+      <h1 class="title has-text-centered isPrimaryColor" style="margin-top:20px">Orders to pay</h1>
+      <p
+        v-if="onID<1"
+        class="subtitle is-4 has-text-centered has-text-white"
+        style="margin-top:10px"
+      >No orders found yet!</p>
+
+      <div class="columns is-mobile is-multiline">
+        <div class="column is-12-mobile" v-for="(order,i) in filteredOrders" :key="i">
+          <div class="card cardTheHover">
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left is-2" style="margin-top: 12px;margin-left: 12px ">
+                  <figure class="image is-64x64">
+                    <img :src="order.image" alt="Placeholder image" />
+                  </figure>
+                </div>
+                <div class="media-content" style="margin-top: 12px">
+                  <p class="title is-4">{{order.name}}</p>
+                  <p>Price: {{order.price}}</p>
+                </div>
+                <div class="media-right" style="margin-top: 12px">
+                  <button class="button is-success is-fullwidth" @click="payOrder(order.idOrder,i)">
+                    <i class="fas fa-check-square"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </body>
 </template>
 
 <script>
 import SideBar from "../components/sideBar";
 import CountUp from "../components/countUp";
-import { getAlerts} from "../API/apiAlerts";
-
-
+import { getAlerts } from "../API/apiAlerts";
+import {
+  getAllOrders,
+  editPaymentActive,
+  editInstalationActive
+} from "../API/apiOrder";
+import { QrcodeStream } from "vue-qrcode-reader";
+import { ToastProgrammatic as toast } from "buefy";
 export default {
   components: {
     SideBar,
-    CountUp
+    CountUp,
+    QrcodeStream
   },
   data() {
     return {
+      orders: [],
+      filteredOrders: [],
+      result: "",
+      error: "",
       alerts: [],
       values: [],
-      events: [
-        {
-          name: "O utilizador xpto45 carregou no botão de emergencia.",
-          date: "25 May 2020",
-          type: "danger"
-        },
-        {
-          name:
-            "O utilizador Matilde_Estrelinha carregou no botão de emergencia.",
-          date: "1 April 2020",
-          type: "danger"
-        },
-        {
-          name: "Novo utilizador FilipeCardoso",
-          date: "20 March 2020",
-          type: "success"
-        },
-        {
-          name: "O produto camera de video vigilancia ficou sem stock",
-          date: "19 March 2020",
-          type: "warning"
-        },
-        {
-          name: "O produto camera de video vigilancia ficou sem stock",
-          date: "19 March 2020",
-          type: "warning"
-        },
-        {
-          name: "O produto camera de video vigilancia ficou sem stock",
-          date: "19 March 2020",
-          type: "warning"
-        },
-        {
-          name: "O produto camera de video vigilancia ficou sem stock",
-          date: "19 March 2020",
-          type: "warning"
-        },
-        {
-          name: "O produto camera de video vigilancia ficou sem stock",
-          date: "19 March 2020",
-          type: "warning"
-        },
-        {
-          name: "O produto camera de video vigilancia ficou sem stock",
-          date: "19 March 2020",
-          type: "warning"
-        },
-        {
-          name: "O produto camera de video vigilancia ficou sem stock",
-          date: "19 March 2020",
-          type: "warning"
-        },
-        {
-          name: "O produto camera de video vigilancia ficou sem stock",
-          date: "19 March 2020",
-          type: "warning"
-        }
-      ],
       eventsAll: false
     };
   },
   created() {
+    getAllOrders().then(response => {
+      this.orders = response.data.data;
+      this.orders = this.orders.filter(order => {
+        if (order.active == 1 && (order.payed != 1 || order.instalation != 1)) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    });
 
-    if(localStorage.getItem("countUp")){
+    if (localStorage.getItem("countUp")) {
       this.values = localStorage.getItem("countUp");
-      this.values = this.values.split(",")
-      console.log(this.values)
+      this.values = this.values.split(",");
+      console.log(this.values);
     }
 
     getAlerts().then(response => {
       this.alerts = response.data.data;
-      this.alerts.forEach((alert,i) => {
+      this.alerts.forEach((alert, i) => {
         /* eslint-disable */
-        
-        let mydate = new Date(this.alerts[i].createdAt);
-        this.alerts[i].createdAt = this.alerts[i].createdAt.slice(0,10)
 
+        let mydate = new Date(this.alerts[i].createdAt);
+        this.alerts[i].createdAt = this.alerts[i].createdAt.slice(0, 10);
       });
     });
-      
+  },
+  computed: {
+    onID() {
+      /* eslint-disable */
+
+      this.orders.forEach(order => {
+        if (order.idUser == this.result) {
+          this.filteredOrders.push(order);
+        }
+      });
+      return this.filteredOrders.length;
+    }
   },
   methods: {
+    payOrder(id,i) {
+      editPaymentActive(id, { payed: 1}).then(() => {
+        editInstalationActive(id, { instalation: 1}).then(() => {
+          toast.open({
+                message: "Order confirmed",
+                type: "is-success"
+              });
+          this.orders.splice(i,1)
+        })
+        .catch(error => {
+              toast.open({
+                message: error,
+                type: "is-danger"
+              });
+            });
+      })
+      .catch(error => {
+              toast.open({
+                message: error,
+                type: "is-danger"
+              });
+            });
+    },
     filterEvents(events) {
       let temp = [];
       if (!this.eventsAll) {
@@ -226,12 +261,47 @@ export default {
         temp = events;
       }
       return temp;
+    },
+    onDecode(result) {
+      this.result = result;
+    },
+
+    async onInit(promise) {
+      try {
+        await promise;
+      } catch (error) {
+        if (error.name === "NotAllowedError") {
+          this.error = "ERROR: you need to grant camera access permisson";
+        } else if (error.name === "NotFoundError") {
+          this.error = "ERROR: no camera on this device";
+        } else if (error.name === "NotSupportedError") {
+          this.error = "ERROR: secure context required (HTTPS, localhost)";
+        } else if (error.name === "NotReadableError") {
+          this.error = "ERROR: is the camera already in use?";
+        } else if (error.name === "OverconstrainedError") {
+          this.error = "ERROR: installed cameras are not suitable";
+        } else if (error.name === "StreamApiNotSupportedError") {
+          this.error = "ERROR: Stream API is not supported in this browser";
+        }
+      }
     }
   }
 };
 </script>
 
-<style>
+<style scoped>
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
+}
+
+.error {
+  font-weight: bold;
+  color: red;
+}
+
 .hover-item:hover {
   -webkit-transform: scale(1.055) translateY(-2px);
   transform: scale(1.055) translateY(-2px);

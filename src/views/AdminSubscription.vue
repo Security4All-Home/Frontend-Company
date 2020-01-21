@@ -105,6 +105,7 @@ import { ToastProgrammatic as toast } from "buefy";
 
 import { getAllPackages, editPack } from "../API/apiPackages";
 
+
 export default {
   components: {
     SideBar
