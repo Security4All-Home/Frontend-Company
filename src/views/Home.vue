@@ -80,8 +80,8 @@ export default {
   name: "Home",
   data() {
     return {
-      email: "rodrigo@gmail.com",
-      password: "1234567890",
+      email: "admin@hotmail.com",
+      password: "123456",
       //
       a1: null,
       a2: null,
@@ -141,7 +141,7 @@ export default {
         ];
         localStorage.setItem("countUp", temp);
       }
-    }, 5000);
+    }, 50000);
   },
   methods: {
     verifyUser() {
