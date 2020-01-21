@@ -31,7 +31,7 @@
     <li><a class="aWhite" @click="goTo('/user/manager',8)" v-bind:class="(page==8)? 'is-active':''">Manage Users</a></li>
   </ul>
   <br>
-  <p class="menu-label pWhite is-size-6 primaryHover exit" @click="goTo('/', 0)">
+  <p class="menu-label pWhite is-size-6 primaryHover exit" @click="goTo('/', 0);localStorage.removeItem('token');localStorage.removeItem('user');axios.defaults.headers.common['x-access-token'] = ''">
     <i class="fas fa-sign-out-alt"></i> Sign out
   </p>
 </aside>

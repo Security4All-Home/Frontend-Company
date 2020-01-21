@@ -146,8 +146,8 @@
             <th>{{user.username}}</th>
             <th>{{user.name}}</th>
             <th>{{user.idType}}</th>
-            <th v-if="user.disabled==1">Active</th>
-            <th v-if="user.disabled==0">Blocked</th>
+            <th v-if="user.disabled==1">Blocked</th>
+            <th v-if="user.disabled==0">Active</th>
             <th>{{user.credit}}</th>
             <th>{{user.points}}</th>
             <th width="20%">
@@ -155,20 +155,20 @@
                 <i class="fas fa-info-circle"></i>
               </button>
               <button
-                class="button is-danger is-light"
-                v-if="user.disabled==0"
-                style="margin-left: 10px; width: 50px"
-                @click="blockButton(1, user.username, user.idUser, i)"
-              >
-                <i class="fas fa-ban" ></i>
-              </button>
-              <button
                 class="button is-info is-light"
                 v-if="user.disabled==1"
                 style="margin-left: 10px; width: 50px"
                 @click="blockButton(0, user.username, user.idUser, i)"
               >
-                <i class="fas fa-unlock"></i>
+                <i class="fas fa-unlock" ></i>
+              </button>
+              <button
+                class="button is-danger is-light"
+                v-if="user.disabled==0"
+                style="margin-left: 10px; width: 50px"
+                @click="blockButton(1, user.username, user.idUser, i)"
+              >
+                <i class="fas fa-ban"></i>
               </button>
               <button
                 class="button is-warning is-light"

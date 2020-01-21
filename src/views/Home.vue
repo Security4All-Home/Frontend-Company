@@ -80,8 +80,8 @@ export default {
   name: "Home",
   data() {
     return {
-      email: "jaci@gmail.com",
-      password: "1234",
+      email: "rodrigo@gmail.com",
+      password: "1234567890",
       //
       a1: null,
       a2: null,
@@ -153,6 +153,7 @@ export default {
             console.log(response);
             //localStorage.setItem("token", response.headers["x-access-token"]);
             if (response.data.data.idType == 1) {
+              localStorage.setItem('token',response.data.token)
               localStorage.setItem("user", response.data.data);
               this.$router.push("/dashboard");
             } else {

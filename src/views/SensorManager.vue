@@ -264,6 +264,21 @@
               </b-field>
             </div>
           </div>
+          <div class="columns">
+            <div class="column is-12">
+              <b-field label="Edit the Specs">
+                <b-input
+                  type="text"
+                  maxlength="300"
+                  placeholder="Specs, separeted with ;"
+                  icon-pack="fas"
+                  icon="font"
+                  required
+                  v-model="editSpecs"
+                ></b-input>
+              </b-field>
+            </div>
+          </div>
         </section>
         <footer class="modal-card-foot">
           <button class="button" type="button" @click="editModal = false">Cancel</button>
@@ -308,7 +323,8 @@ export default {
       editDescription: "",
       editImage: "",
       editCategory: "",
-      editCategoryName: ""
+      editCategoryName: "",
+      editSpecs: ""
     };
   },
   computed: {},
@@ -386,7 +402,8 @@ export default {
           price: this.editPrice,
           image: this.editImage,
           description: this.editDescription,
-          idCategory: this.editCategory
+          idCategory: this.editCategory,
+          specifications: this.editSpecs
         };
 
         editSensor(temp, this.editId)
@@ -402,6 +419,7 @@ export default {
             this.sensors[pos].image = this.editImage;
             this.sensors[pos].idCategory = this.editCategory;
             this.sensors[pos].categoryName = this.editCategoryName;
+            this.sensors[pos].specifications = this.editSpecs;
             this.editModal = false;
           })
           .catch(error => {
@@ -479,6 +497,7 @@ export default {
       this.editImage = this.sensors[pos].image;
       this.editCategory = this.sensors[pos].idCategory;
       this.editCategoryName = this.sensors[pos].categoryName;
+      this.editSpecs = this.sensors[pos].specifications;
 
       this.editModal = true;
     },
