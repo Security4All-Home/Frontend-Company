@@ -38,7 +38,7 @@
               <button
                 class="button is-success"
                 style="width: 50px"
-                @click="acceptOrder(order.idOrder, i,order.quantity,order.stock)"
+                @click="acceptOrder(order.idOrder, i,order.quantity,order.stock,name, order.idSensor)"
               >
                 <i class="fas fa-check"></i>
               </button>
@@ -64,6 +64,7 @@ import SideBar from "../components/sideBar";
 //Axios
 import { getAllOrders, editOrderActive, removeOrder } from "../API/apiOrder";
 import { editSensor } from "../API/apiSensor";
+import { createAlert } from "../API/apiAlerts";
 
 import { ToastProgrammatic as toast } from "buefy";
 
@@ -78,25 +79,44 @@ export default {
     };
   },
   methods: {
-    acceptOrder(id, i, x, stock) {
-      this.$buefy.dialog.confirm({
-        title: "Confirm Order",
-        message: "Are you sure you want to confirm this order?",
-        confirmText: "Validate Order",
-        type: "is-success",
-        hasIcon: true,
-        onConfirm: () => {
-          /* eslint-disable */
-          console.log(id);
-          editOrderActive(id, { active: 1 }) //Edit active field
-            .then(() => {
-              let temp = stock - x;
-              temp = { stock: temp };
-              editSensor(temp, id).then(() => { //Update stock (stock - quantity)
-                toast
-                  .open({
-                    type: "is-success",
-                    message: "Validated"
+    acceptOrder(id, i, x, stock,sensorName,idSensor) {
+      if (x > stock) {
+        toast.open({
+          message: "Not enough stock",
+          type: "is-danger"
+        });
+      } else {
+        this.$buefy.dialog.confirm({
+          title: "Confirm Order",
+          message: "Are you sure you want to confirm this order?",
+          confirmText: "Validate Order",
+          type: "is-success",
+          hasIcon: true,
+          onConfirm: () => {
+            /* eslint-disable */
+            console.log(id);
+            editOrderActive(id, { active: 1 }) //Edit active field
+              .then(() => {
+                let temp = stock - x;
+                temp = { stock: temp };
+
+                editSensor(temp, idSensor) //Update stock (stock - quantity)
+                  .then(() => {               
+                    if (temp.stock == 0) { //If stock = 0, give an alert to dashboard
+                      let temp2 = {
+                        "alertText": "The product " + sensorName + " ran out of stock",
+                        "alertType": "Warning"
+                      }
+                      createAlert(temp2).then(() => {
+                          // eslint-disable-next-line
+                          console.log("Alert created")
+                      });
+                    }
+                    toast.open({
+                      type: "is-success",
+                      message: "Validated"
+                    });
+                    this.orders.splice(i, 1);
                   })
                   .catch(error => {
                     toast.open({
@@ -104,17 +124,16 @@ export default {
                       type: "is-danger"
                     });
                   });
+              })
+              .catch(error => {
+                toast.open({
+                  message: error,
+                  type: "is-danger"
+                });
               });
-              this.orders.splice(i, 1);
-            })
-            .catch(error => {
-              toast.open({
-                message: error,
-                type: "is-danger"
-              });
-            });
-        }
-      });
+          }
+        });
+      }
     },
     deleteOrder(id, i) {
       this.$buefy.dialog.confirm({
