@@ -141,7 +141,7 @@ export default {
         ];
         localStorage.setItem("countUp", temp);
       }
-    }, 50000);
+    }, 5000);
   },
   methods: {
     verifyUser() {

@@ -7,45 +7,45 @@
 
     <!--  -->
     <!--  -->
-    <!-- <div>
+    <div>
       <table class="table is-fullwidth">
         <thead>
           <tr>
-
             <th>
               <abbr title="Position">ID</abbr>
             </th>
             <th>Username</th>
+            <th></th>
             <th>Sensor</th>
-            <th>Quantity</th>            
+            <th>Quantity</th>
             <th>Stock available</th>
             <th>Date</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-
-          <tr v-for="(user,i) in users" :key="i">
-            
-            <th>{{user.idUser}}</th>
-            <th>{{user.username}}</th>
-
-            <th>{{user.name}}</th>
-            <th>{{user.email}}</th>
-            <th>{{user.credit}}</th>
-            <th>{{user.points}}</th>
+          <tr v-for="(order,i) in orders" :key="i">
+            <th>{{order.idOrder}}</th>
+            <th>{{order.username}}</th>
+            <th>
+              <img :src="order.image" class="image is-24x24" />
+            </th>
+            <th>{{order.name}}</th>
+            <th>{{order.quantity}}</th>
+            <th>{{order.stock}}</th>
+            <th>{{order.date}}</th>
             <th width="15%">
               <button
                 class="button is-success"
                 style="width: 50px"
-                @click="acceptUser(user.name,user.idUser, i)"
+                @click="acceptOrder(order.idOrder, i,order.quantity,order.stock)"
               >
                 <i class="fas fa-check"></i>
               </button>
               <button
                 class="button is-danger is-light"
                 style="margin-left: 10px; width: 50px"
-                @click="deleteUser(user.name,user.idUser, i)"
+                @click="deleteOrder(order.idOrder, i)"
               >
                 <i class="fas fa-times"></i>
               </button>
@@ -53,7 +53,7 @@
           </tr>
         </tbody>
       </table>
-    </div> -->
+    </div>
     <!-- Table -->
   </section>
 </body>
@@ -62,9 +62,10 @@
 <script>
 import SideBar from "../components/sideBar";
 //Axios
-import { getAllOrders } from "../API/apiOrder"; //getAllSensors, getAllSensorOrders, 
+import { getAllOrders, editOrderActive, removeOrder } from "../API/apiOrder";
+import { editSensor } from "../API/apiSensor";
 
-//import { ToastProgrammatic as toast } from "buefy";
+import { ToastProgrammatic as toast } from "buefy";
 
 export default {
   components: {
@@ -77,70 +78,75 @@ export default {
     };
   },
   methods: {
-    // acceptUser(name, id, pos) {
-    //   this.$buefy.dialog.confirm({
-    //     title: "Confirm " + name,
-    //     message: "Are you sure you want to confirm this account: " + name + "?",
-    //     confirmText: "Validate Account",
-    //     type: "is-success",
-    //     hasIcon: true,
-    //     onConfirm: () => {
-    //          /* eslint-disable */
-    //          console.log(id)
-    //       validateUser(id)
-    //         .then(() => {
-    //           toast.open({
-    //             type: "is-success",
-    //             message: name + " validated"
-    //           });
-
-    //           this.users.splice(pos, 1);
-    //         })
-    //         .catch(error => {
-    //           toast.open({
-    //             message: error,
-    //             type: "is-danger"
-    //           });
-    //         });
-    //     }
-    //   });
-    // },
-    // deleteUser(name, id, pos) {
-    //   this.$buefy.dialog.confirm({
-    //     title: "Delete " + name,
-    //     message:
-    //       "Are you sure you want to not confirm this account: " +
-    //       name +
-    //       "? The user will be deleted",
-    //     confirmText: "Delete User",
-    //     type: "is-danger",
-    //     hasIcon: true,
-    //     onConfirm: () => {
-    //       removeUser(id)
-    //         .then(() => {
-    //           toast.open({
-    //             type: "is-warning",
-    //             message: name + " deleted"
-    //           });
-
-    //           this.users.splice(pos, 1);
-    //         })
-    //         .catch(error => {
-    //           toast.open({
-    //             message: error,
-    //             type: "is-danger"
-    //           });
-    //         });
-    //     }
-    //   });
-    // }
+    acceptOrder(id, i, x, stock) {
+      this.$buefy.dialog.confirm({
+        title: "Confirm Order",
+        message: "Are you sure you want to confirm this order?",
+        confirmText: "Validate Order",
+        type: "is-success",
+        hasIcon: true,
+        onConfirm: () => {
+          /* eslint-disable */
+          console.log(id);
+          editOrderActive(id, { active: 1 }) //Edit active field
+            .then(() => {
+              let temp = stock - x;
+              temp = { stock: temp };
+              editSensor(temp, id).then(() => { //Update stock (stock - quantity)
+                toast
+                  .open({
+                    type: "is-success",
+                    message: "Validated"
+                  })
+                  .catch(error => {
+                    toast.open({
+                      message: error,
+                      type: "is-danger"
+                    });
+                  });
+              });
+              this.orders.splice(i, 1);
+            })
+            .catch(error => {
+              toast.open({
+                message: error,
+                type: "is-danger"
+              });
+            });
+        }
+      });
+    },
+    deleteOrder(id, i) {
+      this.$buefy.dialog.confirm({
+        title: "Delete Order ID" + id,
+        message: "Are you sure you want to delete the order?",
+        confirmText: "Delete Order",
+        type: "is-danger",
+        hasIcon: true,
+        onConfirm: () => {
+          removeOrder(id)
+            .then(() => {
+              toast.open({
+                type: "is-warning",
+                message: "Order deleted"
+              });
+              this.orders.splice(i, 1);
+            })
+            .catch(error => {
+              toast.open({
+                message: error,
+                type: "is-danger"
+              });
+            });
+        }
+      });
+    }
   },
   created() {
     getAllOrders().then(response => {
-        
       this.orders = response.data.data;
       /* eslint-disable */
-        console.log(this.orders)
+      console.log(this.orders);
       this.orders = this.orders.filter(order => {
         if (order.active == 0) {
           return true;
@@ -148,7 +154,6 @@ export default {
           return false;
         }
       });
-
     });
   }
 };
